@@ -10,7 +10,10 @@
      Hier Theme, Maintenance & Announcement ändern!
   ════════════════════════════════════════════════ */
   const MAINTENANCE = false;
-  const SYSTEM_FAILURE = false; // ✏️ true = leitet auf 404 weiter
+  const SYSTEM_FAILURE = false;
+  const OFFLINE = false;           // ✏️ true = alle Seiten → offline
+  const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
+  const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
   const GLOBAL_THEME = "default";
   const GLOBAL_ANNOUNCEMENT = "";
   /* ════════════════════════════════════════════════ */
@@ -19,8 +22,11 @@
   if (MAINTENANCE && !_isMaintPage) { window.location.replace('maintenance.html'); }
   else if (!MAINTENANCE && _isMaintPage) { window.location.replace('index.html'); }
   const _is404Page = window.location.href.includes('404.html');
+  const _isOfflinePage = window.location.href.includes('offline.html');
   if (SYSTEM_FAILURE && !_is404Page) { window.location.replace('404.html'); }
   else if (!SYSTEM_FAILURE && _is404Page) { window.location.replace('index.html'); }
+  if (OFFLINE && !_isOfflinePage) { window.location.replace('offline.html'); }
+  else if (!OFFLINE && _isOfflinePage) { window.location.replace('index.html'); }
 
   if (GLOBAL_THEME !== "default") {
     document.documentElement.setAttribute('data-theme', GLOBAL_THEME);
@@ -155,6 +161,10 @@
     .ann-card.system_failure::before { background:linear-gradient(90deg,#ff0000,#ff3a2a); opacity:1; }
     @keyframes failure-pulse { 0%,100%{box-shadow:0 0 20px rgba(255,0,0,.15);} 50%{box-shadow:0 0 40px rgba(255,0,0,.35);} }
 
+    .ann-card.offline { border-color:rgba(255,100,0,.4); animation:offline-pulse 2s ease-in-out infinite; }
+    .ann-card.offline::before { background:linear-gradient(90deg,#cc4400,#ff6600); opacity:1; }
+    @keyframes offline-pulse { 0%,100%{box-shadow:0 0 20px rgba(255,100,0,.1);} 50%{box-shadow:0 0 40px rgba(255,100,0,.3);} }
+
     .ann-card.default  { border-color:var(--border); }
     .ann-card.default::before  { background:linear-gradient(90deg, var(--purple), var(--pink)); }
     .ann-card.default:hover  { border-color:rgba(255,45,155,.4); }
@@ -173,6 +183,7 @@
     .ann-badge.error    { background:rgba(255,60,60,.15);  color:#ff3a2a; border:1px solid rgba(255,60,60,.3); }
     .ann-badge.system_failure { background:rgba(255,0,0,.2); color:#ff2020; border:1px solid rgba(255,0,0,.5); animation:badge-blink .8s step-end infinite; }
     @keyframes badge-blink { 50%{opacity:.4;} }
+    .ann-badge.offline { background:rgba(255,100,0,.15); color:#ff6600; border:1px solid rgba(255,100,0,.4); animation:badge-blink .8s step-end infinite; }
     .ann-badge.default  { background:rgba(255,45,155,.1);  color:var(--pink); border:1px solid rgba(255,45,155,.3); }
 
     .ann-title { font-family:'Orbitron'; font-size:.9rem; font-weight:700; letter-spacing:.1em; color:var(--white); }
@@ -194,9 +205,8 @@
     .status-label { color:var(--white); font-weight:600; }
 
     /* ── PARTICLES ── */
-    .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-    .particle  { position:absolute; border-radius:50%; animation:float-p linear infinite; opacity:0; }
-    @keyframes float-p { 0%{transform:translateY(100vh);opacity:0;}10%{opacity:.5;}90%{opacity:.3;}100%{transform:translateY(-10vh) translateX(30px);opacity:0;} }
+    /* ── PARTICLES ── */
+    #particles { position:fixed; inset:0; z-index:0; pointer-events:none; }10%{opacity:.5;}90%{opacity:.3;}100%{transform:translateY(-10vh) translateX(30px);opacity:0;} }
 
     ::-webkit-scrollbar { width:4px; }
     ::-webkit-scrollbar-track { background:var(--bg); }
@@ -311,7 +321,7 @@
   <a href="information.html" >Information</a>
   <a href="announcements.html" class="active">Announcements</a>
 </div>
-<div class="particles" id="particles"></div>
+<canvas id="particles"></canvas>
 
 <nav>
   <a href="index.html" class="nav-logo">NOVA SYNDICATE</a>
@@ -369,7 +379,7 @@
 <script>
   /* ════════════════════════════════════════════════
      ✏️  ANNOUNCEMENTS — Hier eintragen!
-     type: "warning" | "info" | "success" | "error" | "default"
+     type: "warning" | "info" | "success" | "error" | "offline" | "system_failure" | "default"
      date: "DD.MM.YYYY"
   ════════════════════════════════════════════════ */
   const ANNOUNCEMENTS = [
@@ -379,18 +389,12 @@
       text: "Website is going in Maintenance at 8 PM untill Tmr 11:50 AM.",
       date: "05.03.2026"
     },
-    {
-      type: "info",
-      title: "Maintenance",
-      text: "Website is going in Maintenance Early!",
-      date: "05.03.2026"
-    },
-    {
-      type: "error",
-      title: "Error",
-      text: "The Main page has an unidentified error!",
-      date: "05.03.2026"
-    },
+    // {
+    //   type: "offline",
+    //   title: "Offline",
+    //   text: "Nova Syndicate is currently offline. Reason: Server Maintenance Until: Tmr 11:50 AM",
+    //   date: "05.03.2026"
+    // },
   ];
   /* ════════════════════════════════════════════════ */
 
@@ -437,10 +441,89 @@
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
   (function animGlow(){gx+=(mx-gx)*.08;gy+=(my-gy)*.08;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animGlow);})();
 
-  // Particles
-  const container=document.getElementById('particles');
-  const colors=['#ff2d9b','#8b2aff','#f0e8ff','#c84dff'];
-  for(let i=0;i<24;i++){const p=document.createElement('div');p.classList.add('particle');const size=Math.random()*3+1;const color=colors[Math.floor(Math.random()*colors.length)];p.style.cssText=`width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*15}s;box-shadow:0 0 ${size*3}px ${color};`;container.appendChild(p);}
+  /* ── Particle System ── */
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const mouse = {x:-1000, y:-1000};
+  const isMobile = window.matchMedia('(max-width:640px)').matches;
+
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+  resize();
+  window.addEventListener('resize',()=>{resize();initParticles()});
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+
+  const COLORS=[[255,45,155],[139,42,255],[192,100,255],[240,180,255],[255,255,255]];
+
+  class Particle{
+    constructor(init){this.reset(init)}
+    reset(randomY){
+      this.x=Math.random()*W;
+      this.y=randomY?Math.random()*H:H+10;
+      this.vx=(Math.random()-.5)*.3;
+      this.vy=-(Math.random()*.6+.35);
+      this.size=Math.random()*1.5+.3;
+      this.life=0;this.maxLife=Math.random()*300+400;
+      this.wave=Math.random()*Math.PI*2;
+      this.twinkle=Math.random()*Math.PI*2;
+      const c=COLORS[Math.floor(Math.random()*COLORS.length)];
+      this.r=c[0];this.g=c[1];this.b=c[2];
+    }
+    update(){
+      this.life++;this.wave+=.018;this.twinkle+=.038;
+      this.x+=this.vx+Math.sin(this.wave)*.16;
+      this.y+=this.vy;
+      if(!isMobile){
+        const dx=this.x-mouse.x,dy=this.y-mouse.y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<85){const f=(85-dist)/85;this.x+=(dx/dist)*f*1.1;this.y+=(dy/dist)*f*1.1}
+      }
+      if(this.life>this.maxLife||this.y<-20)this.reset(false);
+    }
+    draw(){
+      const p=this.life/this.maxLife;
+      const fade=p<.08?p/.08:p>.9?(1-p)/.1:1;
+      const alpha=fade*(0.65+0.35*Math.sin(this.twinkle));
+      const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*4);
+      g.addColorStop(0,`rgba(${this.r},${this.g},${this.b},${alpha*.55})`);
+      g.addColorStop(1,`rgba(${this.r},${this.g},${this.b},0)`);
+      ctx.beginPath();ctx.arc(this.x,this.y,this.size*4,0,Math.PI*2);
+      ctx.fillStyle=g;ctx.fill();
+      ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${this.r},${this.g},${this.b},${alpha})`;ctx.fill();
+    }
+  }
+
+  function drawLines(){
+    if(isMobile)return;
+    const near=particles.filter(p=>{
+      const dx=p.x-mouse.x,dy=p.y-mouse.y;
+      return Math.sqrt(dx*dx+dy*dy)<140;
+    });
+    for(let i=0;i<near.length;i++){
+      for(let j=i+1;j<near.length;j++){
+        const dx=near[i].x-near[j].x,dy=near[i].y-near[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<85){
+          ctx.beginPath();ctx.moveTo(near[i].x,near[i].y);ctx.lineTo(near[j].x,near[j].y);
+          ctx.strokeStyle=`rgba(255,45,155,${(1-d/85)*.22})`;ctx.lineWidth=.6;ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function initParticles(){
+    const count=isMobile?60:Math.min(Math.floor((W*H)/7000),150);
+    particles=Array.from({length:count},()=>new Particle(true));
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    drawLines();
+    particles.forEach(p=>{p.update();p.draw()});
+    requestAnimationFrame(animate);
+  }
+  initParticles();animate();
 
   // Hamburger menu
   function toggleMenu() {
