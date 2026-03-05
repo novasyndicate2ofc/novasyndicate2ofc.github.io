@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Announcements</title>
+  <script>
+  /* ════════════════════════════════════════════════
+     ✏️  NOVA SYNDICATE — CONFIG
+     Hier Theme, Maintenance & Announcement ändern!
+  ════════════════════════════════════════════════ */
+  const MAINTENANCE = false;
+  const GLOBAL_THEME = "default";
+  const GLOBAL_ANNOUNCEMENT = "";
+  /* ════════════════════════════════════════════════ */
+
+  const _isMaintPage = window.location.href.includes('maintenance.html');
+  if (MAINTENANCE && !_isMaintPage) { window.location.replace('maintenance.html'); }
+  else if (!MAINTENANCE && _isMaintPage) { window.location.replace('index.html'); }
+
+  if (GLOBAL_THEME !== "default") {
+    document.documentElement.setAttribute('data-theme', GLOBAL_THEME);
+  }
+
+  const _GREETINGS = {
+    winter:"Happy Winter ❄️", christmas:"Merry Christmas 🎄",
+    halloween:"Happy Halloween 🎃", newyear:"Happy New Year 🎆",
+    valentine:"Happy Valentine's Day ❤️", sunset:"Enjoy the Sunset 🌅"
+  };
+  const _EMOJIS = {
+    winter:    {e:['❄️','❄️','🌨️','❄️','❄️'], n:35},
+    christmas: {e:['❄️','🎄','🎅','⭐','🎁'], n:28},
+    halloween: {e:['🎃','🕷️','💀','🦇','👻','🕸️'], n:25},
+    valentine: {e:['❤️','💕','💖','💗','🌹','💝'], n:28}
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    if (_GREETINGS[GLOBAL_THEME]) {
+      const s = document.createElement('style');
+      s.textContent = `#theme-greeting{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:995;font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#f0e8ff;background:linear-gradient(90deg,rgba(139,42,255,.25),rgba(255,45,155,.25));border:1px solid rgba(255,45,155,.4);backdrop-filter:blur(10px);padding:8px 28px;border-radius:30px;white-space:nowrap;pointer-events:none;animation:greet-in .8s ease both;}@keyframes greet-in{from{opacity:0;transform:translateX(-50%) translateY(-10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}`;
+      document.head.appendChild(s);
+      const b = document.createElement('div');
+      b.id = 'theme-greeting';
+      b.textContent = _GREETINGS[GLOBAL_THEME];
+      document.body.appendChild(b);
+    }
+    if (_EMOJIS[GLOBAL_THEME]) {
+      const s = document.createElement('style');
+      s.textContent = `.t-particle{position:fixed;pointer-events:none;z-index:9997;animation:t-fall linear infinite;opacity:0;user-select:none;}@keyframes t-fall{0%{top:-60px;opacity:0;}5%{opacity:1;}95%{opacity:.9;}100%{top:110vh;opacity:0;}}`;
+      document.head.appendChild(s);
+      const {e, n} = _EMOJIS[GLOBAL_THEME];
+      for (let i=0; i<n; i++) {
+        const el = document.createElement('div');
+        el.classList.add('t-particle');
+        el.textContent = e[Math.floor(Math.random()*e.length)];
+        const size = Math.random()*16+12;
+        el.style.cssText = `left:${Math.random()*100}%;top:-60px;font-size:${size}px;animation-duration:${Math.random()*10+8}s;animation-delay:${Math.random()*14}s;`;
+        document.body.appendChild(el);
+      }
+    }
+  });
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink:   #ff2d9b;
+      --purple: #8b2aff;
+      --white:  #f0e8ff;
+      --dim:    rgba(240,232,255,0.5);
+      --bg:     #05000f;
+      --card:   rgba(139,42,255,0.07);
+      --border: rgba(139,42,255,0.25);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow-x:hidden; cursor:default; }
+
+    #cursor-glow { position:fixed; width:300px; height:300px; background:radial-gradient(circle, rgba(255,45,155,0.15) 0%, rgba(139,42,255,0.08) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+
+    body::before { content:''; position:fixed; inset:0; background: linear-gradient(rgba(139,42,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139,42,255,.04) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
+    body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,42,255,.15) 0%, transparent 70%); pointer-events:none; z-index:0; }
+
+    /* ── NAV ── */
+    nav { position:fixed; top:0; left:0; right:0; z-index:1000; display:flex; align-items:center; justify-content:space-between; padding:18px 48px; background:rgba(5,0,15,.75); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'Orbitron'; font-size:1.1rem; font-weight:900; letter-spacing:.18em; background:linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:none; }
+    .nav-links { display:flex; gap:28px; list-style:none; }
+    .nav-links a { font-family:'Rajdhani'; font-size:.9rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color .2s; position:relative; }
+    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; right:0; height:1px; background:linear-gradient(90deg, var(--pink), var(--purple)); transform:scaleX(0); transform-origin:left; transition:transform .25s ease; }
+    .nav-links a:hover, .nav-links a.active { color:var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform:scaleX(1); }
+    .nav-time { font-family:'Orbitron'; font-size:.8rem; color:var(--pink); letter-spacing:.1em; border:1px solid rgba(255,45,155,.3); padding:6px 14px; border-radius:4px; background:rgba(255,45,155,.05); }
+
+    /* ── ANNOUNCEMENT BANNER ── */
+    #announcement { display:none; position:fixed; top:70px; left:0; right:0; z-index:990; background:linear-gradient(90deg,rgba(139,42,255,.15),rgba(255,45,155,.15)); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); padding:10px 48px; text-align:center; }
+    #announcement.visible { display:block; }
+    .announcement-inner { display:inline-flex;align-items:center;gap:10px;font-size:.82rem;letter-spacing:.12em;color:var(--white); }
+    .announcement-close { position:absolute;right:20px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);font-size:1rem;cursor:pointer;transition:color .2s; }
+    .announcement-close:hover { color:var(--white); }
+
+    /* ── MAIN ── */
+    main { position:relative; z-index:1; padding:130px 48px 100px; max-width:860px; margin:0 auto; }
+
+    /* ── PAGE HEADER ── */
+    .page-header { text-align:center; margin-bottom:52px; animation:fade-up .7s ease both; }
+    .page-tag { font-size:.7rem; letter-spacing:.5em; text-transform:uppercase; color:var(--purple); margin-bottom:14px; display:block; }
+    .page-title { font-family:'Orbitron'; font-size:clamp(2rem,5vw,3.2rem); font-weight:700; background:linear-gradient(135deg, var(--white), var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .page-desc { color:var(--dim); margin-top:10px; font-size:1rem; letter-spacing:.05em; }
+
+    @keyframes fade-up { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+
+    /* ── ANNOUNCEMENT CARDS ── */
+    .ann-list { display:flex; flex-direction:column; gap:16px; }
+
+    .ann-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:28px 32px;
+      position:relative; overflow:hidden;
+      transition:border-color .25s, box-shadow .25s;
+      animation:fade-up .5s ease both;
+    }
+    .ann-card:nth-child(1){animation-delay:.05s}
+    .ann-card:nth-child(2){animation-delay:.12s}
+    .ann-card:nth-child(3){animation-delay:.19s}
+    .ann-card:nth-child(4){animation-delay:.26s}
+    .ann-card:nth-child(5){animation-delay:.33s}
+
+    .ann-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; transition:opacity .25s; opacity:0; }
+    .ann-card:hover { box-shadow:0 8px 40px rgba(139,42,255,.1); }
+    .ann-card:hover::before { opacity:1; }
+
+    /* Type colors */
+    .ann-card.warning  { border-color:rgba(255,180,0,.3); }
+    .ann-card.warning::before  { background:linear-gradient(90deg,#ff9500,#ffd02a); }
+    .ann-card.warning:hover  { border-color:rgba(255,180,0,.6); box-shadow:0 8px 40px rgba(255,180,0,.08); }
+
+    .ann-card.info     { border-color:rgba(0,180,255,.3); }
+    .ann-card.info::before     { background:linear-gradient(90deg,#0077cc,#00cfff); }
+    .ann-card.info:hover     { border-color:rgba(0,180,255,.6); box-shadow:0 8px 40px rgba(0,180,255,.08); }
+
+    .ann-card.success  { border-color:rgba(42,255,139,.3); }
+    .ann-card.success::before  { background:linear-gradient(90deg,#00aa55,#2aff8b); }
+    .ann-card.success:hover  { border-color:rgba(42,255,139,.6); box-shadow:0 8px 40px rgba(42,255,139,.08); }
+
+    .ann-card.error    { border-color:rgba(255,60,60,.3); }
+    .ann-card.error::before    { background:linear-gradient(90deg,#cc0000,#ff3a2a); }
+    .ann-card.error:hover    { border-color:rgba(255,60,60,.6); box-shadow:0 8px 40px rgba(255,60,60,.08); }
+
+    .ann-card.default  { border-color:var(--border); }
+    .ann-card.default::before  { background:linear-gradient(90deg, var(--purple), var(--pink)); }
+    .ann-card.default:hover  { border-color:rgba(255,45,155,.4); }
+
+    /* Card header */
+    .ann-header { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+    .ann-badge {
+      font-family:'Orbitron'; font-size:.6rem; font-weight:700;
+      letter-spacing:.3em; text-transform:uppercase;
+      padding:4px 12px; border-radius:3px;
+      flex-shrink:0;
+    }
+    .ann-badge.warning  { background:rgba(255,180,0,.15); color:#ffd02a; border:1px solid rgba(255,180,0,.3); }
+    .ann-badge.info     { background:rgba(0,180,255,.15); color:#00cfff; border:1px solid rgba(0,180,255,.3); }
+    .ann-badge.success  { background:rgba(42,255,139,.15); color:#2aff8b; border:1px solid rgba(42,255,139,.3); }
+    .ann-badge.error    { background:rgba(255,60,60,.15);  color:#ff3a2a; border:1px solid rgba(255,60,60,.3); }
+    .ann-badge.default  { background:rgba(255,45,155,.1);  color:var(--pink); border:1px solid rgba(255,45,155,.3); }
+
+    .ann-title { font-family:'Orbitron'; font-size:.9rem; font-weight:700; letter-spacing:.1em; color:var(--white); }
+    .ann-date  { margin-left:auto; font-size:.75rem; letter-spacing:.1em; color:var(--dim); flex-shrink:0; }
+
+    .ann-text  { font-size:1.05rem; color:var(--dim); line-height:1.75; letter-spacing:.03em; }
+
+    /* Empty state */
+    .ann-empty { text-align:center; padding:80px 20px; color:var(--dim); }
+    .ann-empty-icon { font-size:3rem; margin-bottom:16px; opacity:.4; display:block; }
+    .ann-empty-text { font-size:1rem; letter-spacing:.1em; }
+
+    /* ── STATUS BAR ── */
+    .status-bar { position:fixed; bottom:0; left:0; right:0; z-index:999; display:flex; align-items:center; justify-content:center; gap:40px; padding:12px 48px; background:rgba(5,0,15,.82); backdrop-filter:blur(12px); border-top:1px solid var(--border); flex-wrap:wrap; }
+    .status-item { display:flex; align-items:center; gap:10px; font-size:.78rem; letter-spacing:.15em; text-transform:uppercase; color:var(--dim); }
+    .status-dot { width:7px; height:7px; border-radius:50%; background:#2aff8b; box-shadow:0 0 8px #2aff8b; animation:dot-pulse 2s ease-in-out infinite; }
+    .status-dot.yellow { background:#ffd02a; box-shadow:0 0 8px #ffd02a; }
+    @keyframes dot-pulse { 0%,100%{opacity:1;}50%{opacity:.4;} }
+    .status-label { color:var(--white); font-weight:600; }
+
+    /* ── PARTICLES ── */
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .particle  { position:absolute; border-radius:50%; animation:float-p linear infinite; opacity:0; }
+    @keyframes float-p { 0%{transform:translateY(100vh);opacity:0;}10%{opacity:.5;}90%{opacity:.3;}100%{transform:translateY(-10vh) translateX(30px);opacity:0;} }
+
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:linear-gradient(var(--purple),var(--pink)); border-radius:2px; }
+
+    @media(max-width:600px){
+      nav { padding:14px 20px; }
+      .nav-links { gap:14px; }
+      .nav-time { display:none; }
+      main { padding:110px 16px 90px; }
+      .ann-card { padding:20px 18px; }
+      .ann-header { flex-wrap:wrap; }
+      .ann-date { margin-left:0; }
+    }
+
+    /* ── HAMBURGER MENU ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 1100;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all .3s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1050;
+      background: rgba(5,0,15,.97);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      animation: menu-in .25s ease both;
+    }
+    .mobile-menu.open { display: flex; }
+    @keyframes menu-in {
+      from { opacity:0; transform:scale(.97); }
+      to   { opacity:1; transform:scale(1); }
+    }
+    .mobile-menu a {
+      font-family: 'Orbitron'; font-size:1.2rem; font-weight:700;
+      letter-spacing:.2em; text-transform:uppercase;
+      color: var(--dim); text-decoration:none;
+      padding: 16px 40px; border-radius:8px;
+      border: 1px solid transparent;
+      transition: all .2s ease;
+      width: 280px; text-align:center;
+    }
+    .mobile-menu a:hover, .mobile-menu a.active {
+      color: var(--white);
+      border-color: var(--border);
+      background: var(--card);
+    }
+    .mobile-menu a.active {
+      background: linear-gradient(135deg, rgba(255,45,155,.1), rgba(139,42,255,.1));
+      border-color: rgba(255,45,155,.3);
+      color: var(--pink);
+    }
+    .mobile-menu-logo {
+      font-family:'Orbitron'; font-size:.85rem; font-weight:900;
+      letter-spacing:.3em;
+      background:linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:32px;
+    }
+    .mobile-menu-close {
+      position: absolute; top:24px; right:24px;
+      background:none; border:none; color:var(--dim);
+      font-size:1.5rem; cursor:pointer; transition:color .2s;
+    }
+    .mobile-menu-close:hover { color:var(--white); }
+
+    @media(max-width:768px) {
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+
+<!-- ── MOBILE MENU OVERLAY ── -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
+  <div class="mobile-menu-logo">NOVA SYNDICATE</div>
+  <a href="index.html" >Home</a>
+  <a href="team.html" >Team</a>
+  <a href="status.html" >Status</a>
+  <a href="information.html" >Information</a>
+  <a href="announcements.html" class="active">Announcements</a>
+</div>
+<div class="particles" id="particles"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">NOVA SYNDICATE</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="status.html">Status</a></li>
+    <li><a href="information.html">Information</a></li>
+    <li><a href="announcements.html" class="active">Announcements</a></li>
+  </ul>
+  
+<!-- ── MOBILE MENU ── -->
+<button class="hamburger" id="hamburger" onclick="toggleMenu()">
+  <span></span><span></span><span></span>
+</button>
+  <div class="nav-time" id="live-time">00:00:00</div>
+</nav>
+
+<div id="announcement">
+  <div class="announcement-inner">
+    <span>📢</span>
+    <span id="announcement-text"></span>
+  </div>
+  <button class="announcement-close" onclick="document.getElementById('announcement').style.display='none'">✕</button>
+</div>
+
+<main>
+  <div class="page-header">
+    <span class="page-tag">✦ Nova Syndicate</span>
+    <h1 class="page-title">Announcements</h1>
+    <p class="page-desc">Stay up to date with the latest news from Nova Syndicate</p>
+  </div>
+
+  <div class="ann-list" id="ann-list"></div>
+</main>
+
+<div class="status-bar">
+  <div class="status-item">
+    <span class="status-dot"></span>
+    <span>Discord</span>
+    <a href="https://discord.gg/SkHmpbVYzw" target="_blank" style="color:var(--white);text-decoration:none;" class="status-label">Online</a>
+  </div>
+  <div class="status-item">
+    <span class="status-dot yellow"></span>
+    <span>Team</span>
+    <span class="status-label">10 Members</span>
+  </div>
+  <div class="status-item">
+    <span class="status-dot"></span>
+    <span>Social</span>
+    <a href="https://www.tiktok.com/@nova_syndi0" target="_blank" style="color:var(--white);text-decoration:none;" class="status-label">TikTok Active</a>
+  </div>
+</div>
+
+<script>
+  /* ════════════════════════════════════════════════
+     ✏️  ANNOUNCEMENTS — Hier eintragen!
+     type: "warning" | "info" | "success" | "error" | "default"
+     date: "DD.MM.YYYY"
+  ════════════════════════════════════════════════ */
+  const ANNOUNCEMENTS = [
+    {
+      type: "warning",
+      title: "Maintenance",
+      text: "Website is going in Maintenance at 9:30 PM till Tmr 11:50 AM.",
+      date: "05.03.2026"
+    },
+  ];
+  /* ════════════════════════════════════════════════ */
+
+  // Render announcements (newest first)
+  const list = document.getElementById('ann-list');
+  const reversed = [...ANNOUNCEMENTS].reverse();
+
+  if (reversed.length === 0) {
+    list.innerHTML = `<div class="ann-empty"><span class="ann-empty-icon">📭</span><div class="ann-empty-text">No announcements yet.</div></div>`;
+  } else {
+    reversed.forEach(a => {
+      const card = document.createElement('div');
+      card.className = `ann-card ${a.type || 'default'}`;
+      card.innerHTML = `
+        <div class="ann-header">
+          <span class="ann-badge ${a.type || 'default'}">${a.type || 'info'}</span>
+          <span class="ann-title">${a.title}</span>
+          <span class="ann-date">${a.date}</span>
+        </div>
+        <div class="ann-text">${a.text}</div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  // Announcement banner
+  const ANNOUNCEMENT = (typeof GLOBAL_ANNOUNCEMENT !== 'undefined' ? GLOBAL_ANNOUNCEMENT : "");
+  if (ANNOUNCEMENT.trim() !== "") {
+    document.getElementById('announcement-text').textContent = ANNOUNCEMENT;
+    document.getElementById('announcement').classList.add('visible');
+  }
+
+  // Live time
+  function updateTime() {
+    const now = new Date();
+    document.getElementById('live-time').textContent =
+      [now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
+  }
+  updateTime(); setInterval(updateTime, 1000);
+
+  // Cursor glow
+  const glow = document.getElementById('cursor-glow');
+  let mx=0,my=0,gx=0,gy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function animGlow(){gx+=(mx-gx)*.08;gy+=(my-gy)*.08;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animGlow);})();
+
+  // Particles
+  const container=document.getElementById('particles');
+  const colors=['#ff2d9b','#8b2aff','#f0e8ff','#c84dff'];
+  for(let i=0;i<24;i++){const p=document.createElement('div');p.classList.add('particle');const size=Math.random()*3+1;const color=colors[Math.floor(Math.random()*colors.length)];p.style.cssText=`width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*15}s;box-shadow:0 0 ${size*3}px ${color};`;container.appendChild(p);}
+
+  // Hamburger menu
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
+</script>
+</body>
+</html>
