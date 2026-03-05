@@ -159,20 +159,21 @@
       font-family: 'Orbitron'; font-size:1.2rem; font-weight:700;
       letter-spacing:.2em; text-transform:uppercase;
       color: var(--dim); text-decoration:none;
-      padding: 16px 40px; border-radius:8px;
+      padding: 12px 28px; border-radius:6px;
       border: 1px solid transparent;
       transition: all .2s ease;
-      width: 280px; text-align:center;
+      display: inline-block;
     }
-    .mobile-menu a:hover, .mobile-menu a.active {
+    .mobile-menu a:hover {
       color: var(--white);
       border-color: var(--border);
       background: var(--card);
     }
     .mobile-menu a.active {
       background: linear-gradient(135deg, rgba(255,45,155,.1), rgba(139,42,255,.1));
-      border-color: rgba(255,45,155,.3);
+      border-color: rgba(255,45,155,.5);
       color: var(--pink);
+      box-shadow: 0 0 16px rgba(255,45,155,.15);
     }
     .mobile-menu-logo {
       font-family:'Orbitron'; font-size:.85rem; font-weight:900;
