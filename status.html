@@ -7,7 +7,8 @@
      ✏️  NOVA SYNDICATE — CONFIG
      Hier Theme, Maintenance & Announcement ändern!
   ════════════════════════════════════════════════ */
-  const MAINTENANCE = false;
+  const MAINTENANCE = true;
+  const SYSTEM_FAILURE = false; // ✏️ true = leitet auf 404 weiter
   const GLOBAL_ANNOUNCEMENT = "";
   /* ════════════════════════════════════════════════ */
 
@@ -15,6 +16,9 @@
   const _isMaintPage = window.location.href.includes('maintenance.html');
   if (MAINTENANCE && !_isMaintPage) { window.location.replace('maintenance.html'); }
   else if (!MAINTENANCE && _isMaintPage) { window.location.replace('index.html'); }
+  const _is404Page = window.location.href.includes('404.html');
+  if (SYSTEM_FAILURE && !_is404Page) { window.location.replace('404.html'); }
+  else if (!SYSTEM_FAILURE && _is404Page) { window.location.replace('index.html'); }
 
 
   // Greeting + Particles
