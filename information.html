@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<script>
+  /* ════════════════════════════════════════════════
+     ✏️  NOVA SYNDICATE — CONFIG
+     Hier Theme, Maintenance & Announcement ändern!
+  ════════════════════════════════════════════════ */
+  const MAINTENANCE = false;
+  const GLOBAL_ANNOUNCEMENT = "";
+  /* ════════════════════════════════════════════════ */
+
+  // Maintenance
+  const _isMaintPage = window.location.href.includes('maintenance.html');
+  if (MAINTENANCE && !_isMaintPage) { window.location.replace('maintenance.html'); }
+  else if (!MAINTENANCE && _isMaintPage) { window.location.replace('index.html'); }
+
+
+  // Greeting + Particles
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Information</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink:   #ff2d9b;
+      --purple: #8b2aff;
+      --white:  #f0e8ff;
+      --dim:    rgba(240,232,255,0.5);
+      --bg:     #05000f;
+      --card:   rgba(139,42,255,0.07);
+      --border: rgba(139,42,255,0.25);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow-x:hidden; cursor:default; }
+
+    #cursor-glow { position:fixed; width:300px; height:300px; background:radial-gradient(circle, rgba(255,45,155,0.15) 0%, rgba(139,42,255,0.08) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+
+    body::before { content:''; position:fixed; inset:0; background: linear-gradient(rgba(139,42,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139,42,255,.04) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
+    body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,42,255,.15) 0%, transparent 70%); pointer-events:none; z-index:0; }
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:1000; display:flex; align-items:center; justify-content:space-between; padding:18px 48px; background:rgba(5,0,15,.75); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'Orbitron'; font-size:1.1rem; font-weight:900; letter-spacing:.18em; background:linear-gradient(135deg, var(--pink), var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-decoration:none; }
+    .nav-links { display:flex; gap:28px; list-style:none; }
+    .nav-links a { font-family:'Rajdhani'; font-size:.9rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color .2s; position:relative; }
+    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; right:0; height:1px; background:linear-gradient(90deg, var(--pink), var(--purple)); transform:scaleX(0); transform-origin:left; transition:transform .25s ease; }
+    .nav-links a:hover, .nav-links a.active { color:var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform:scaleX(1); }
+    .nav-time { font-family:'Orbitron'; font-size:.8rem; color:var(--pink); letter-spacing:.1em; border:1px solid rgba(255,45,155,.3); padding:6px 14px; border-radius:4px; background:rgba(255,45,155,.05); }
+
+    #announcement { display:none; position:fixed; top:70px; left:0; right:0; z-index:990; background:linear-gradient(90deg,rgba(139,42,255,.15),rgba(255,45,155,.15)); border-bottom:1px solid var(--border); backdrop-filter:blur(10px); padding:10px 48px; text-align:center; }
+    #announcement.visible { display:block; }
+    .announcement-inner { display:inline-flex;align-items:center;gap:10px;font-size:.82rem;letter-spacing:.12em;color:var(--white); }
+    .announcement-close { position:absolute;right:20px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);font-size:1rem;cursor:pointer;transition:color .2s; }
+    .announcement-close:hover { color:var(--white); }
+
+    main { position:relative; z-index:1; padding:130px 48px 100px; max-width:900px; margin:0 auto; }
+
+    .page-header { text-align:center; margin-bottom:56px; animation:fade-up .7s ease both; }
+    .page-tag { font-size:.7rem; letter-spacing:.5em; text-transform:uppercase; color:var(--purple); margin-bottom:14px; display:block; }
+    .page-title { font-family:'Orbitron'; font-size:clamp(2rem,5vw,3.5rem); font-weight:700; background:linear-gradient(135deg, var(--white), var(--pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .page-desc { color:var(--dim); margin-top:10px; font-size:1rem; letter-spacing:.05em; }
+
+    @keyframes fade-up { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+
+    .info-section { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:32px 36px; margin-bottom:18px; position:relative; overflow:hidden; transition:border-color .25s, box-shadow .25s; animation:fade-up .6s ease both; }
+    .info-section::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--purple), var(--pink)); opacity:0; transition:opacity .25s; }
+    .info-section:hover { border-color:rgba(255,45,155,.35); box-shadow:0 8px 40px rgba(139,42,255,.1); }
+    .info-section:hover::before { opacity:1; }
+    .info-section:nth-child(1){animation-delay:.05s}
+    .info-section:nth-child(2){animation-delay:.12s}
+    .info-section:nth-child(3){animation-delay:.19s}
+    .info-section:nth-child(4){animation-delay:.26s}
+    .info-section:nth-child(5){animation-delay:.33s}
+    .info-section:nth-child(6){animation-delay:.40s}
+    .info-section:nth-child(7){animation-delay:.47s}
+
+    .section-title { font-family:'Orbitron'; font-size:.72rem; font-weight:700; letter-spacing:.4em; text-transform:uppercase; color:var(--pink); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
+    .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--border), transparent); }
+
+    .section-body { font-size:1.05rem; color:var(--dim); line-height:1.8; letter-spacing:.03em; }
+    .section-body p { margin-bottom:10px; }
+    .section-body p:last-child { margin-bottom:0; }
+
+    .info-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+    .info-list li { display:flex; align-items:flex-start; gap:12px; font-size:1.05rem; color:var(--dim); line-height:1.6; }
+    .info-list li::before { content:'▸'; color:var(--pink); flex-shrink:0; margin-top:2px; }
+
+    .info-quote { border-left:2px solid var(--pink); padding:12px 20px; margin-top:18px; background:rgba(255,45,155,.05); border-radius:0 8px 8px 0; font-size:1rem; color:var(--white); letter-spacing:.06em; font-style:italic; }
+
+    .status-bar { position:fixed; bottom:0; left:0; right:0; z-index:999; display:flex; align-items:center; justify-content:center; gap:40px; padding:12px 48px; background:rgba(5,0,15,.82); backdrop-filter:blur(12px); border-top:1px solid var(--border); flex-wrap:wrap; }
+    .status-item { display:flex; align-items:center; gap:10px; font-size:.78rem; letter-spacing:.15em; text-transform:uppercase; color:var(--dim); }
+    .status-dot { width:7px; height:7px; border-radius:50%; background:#2aff8b; box-shadow:0 0 8px #2aff8b; animation:dot-pulse 2s ease-in-out infinite; }
+    .status-dot.yellow { background:#ffd02a; box-shadow:0 0 8px #ffd02a; }
+    @keyframes dot-pulse { 0%,100%{opacity:1;}50%{opacity:.4;} }
+    .status-label { color:var(--white); font-weight:600; }
+
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .particle  { position:absolute; border-radius:50%; animation:float-p linear infinite; opacity:0; }
+    @keyframes float-p { 0%{transform:translateY(100vh);opacity:0;}10%{opacity:.5;}90%{opacity:.3;}100%{transform:translateY(-10vh) translateX(30px);opacity:0;} }5%{opacity:1;}95%{opacity:.9;}100%{top:110vh;opacity:0;} }
+
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:linear-gradient(var(--purple),var(--pink)); border-radius:2px; }
+
+    @media(max-width:600px){
+      nav { padding:14px 20px; }
+      .nav-links { gap:14px; }
+      .nav-time { display:none; }
+      main { padding:110px 16px 90px; }
+      .info-section { padding:24px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+<div class="particles" id="particles"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">NOVA SYNDICATE</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="status.html">Status</a></li>
+    <li><a href="information.html" class="active">Information</a></li>
+  </ul>
+  <div class="nav-time" id="live-time">00:00:00</div>
+</nav>
+
+<div id="announcement">
+  <div class="announcement-inner">
+    <span>📢</span>
+    <span id="announcement-text"></span>
+  </div>
+  <button class="announcement-close" onclick="document.getElementById('announcement').style.display='none'">✕</button>
+</div>
+
+<main>
+  <div class="page-header">
+    <span class="page-tag">✦ Nova Syndicate</span>
+    <h1 class="page-title">Information</h1>
+    <p class="page-desc">Everything you need to know about Nova Syndicate</p>
+  </div>
+
+  <div class="info-section">
+    <div class="section-title">✦ Welcome</div>
+    <div class="section-body"><p>Welcome to NOVA SYNDICATE.</p></div>
+  </div>
+
+  <div class="info-section">
+    <div class="section-title">✦ Server Purpose</div>
+    <div class="section-body">
+      <p>NOVA SYNDICATE was created to provide an inclusive competitive environment where players of all ranks have the opportunity to grow and compete. We focus on development, teamwork, and maintaining a respectful atmosphere.</p>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <div class="section-title">✦ Membership</div>
+    <ul class="info-list">
+      <li>Open to players of all ranks and skill levels</li>
+      <li>Activity and positive attitude are required</li>
+      <li>Respect toward staff and members is expected</li>
+    </ul>
+  </div>
+
+  <div class="info-section">
+    <div class="section-title">✦ Tryouts</div>
+    <div class="section-body">
+      <p>Tryouts are announced periodically in the appropriate channel. When open, details regarding requirements, scheduling, and evaluation criteria will be posted.</p>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <div class="section-title">✦ Activity Expectations</div>
+    <div class="section-body"><p>Members are expected to:</p></div>
+    <ul class="info-list" style="margin-top:12px;">
+      <li>Stay active within the server</li>
+      <li>Participate in team activities when available</li>
+      <li>Maintain good sportsmanship</li>
+    </ul>
+  </div>
+
+  <div class="info-section">
+    <div class="section-title">✦ Staff Structure</div>
+    <div class="section-body">
+      <p>Our staff team ensures the server remains organized, safe, and professional. All moderation decisions are made to protect the integrity of NOVA SYNDICATE.</p>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <div class="section-title">✦ Community Values</div>
+    <div class="section-body">
+      <p>NOVA SYNDICATE is built on respect, growth, and opportunity. Toxicity, discrimination, and disruptive behavior are not tolerated.</p>
+      <p>We are committed to building not only strong competitors, but a strong community.</p>
+    </div>
+    <div class="info-quote">Represent the name with pride.</div>
+  </div>
+</main>
+
+<div class="status-bar">
+  <div class="status-item">
+    <span class="status-dot"></span>
+    <span>Discord</span>
+    <a href="https://discord.gg/SkHmpbVYzw" target="_blank" style="color:var(--white);text-decoration:none;" class="status-label">Online</a>
+  </div>
+  <div class="status-item">
+    <span class="status-dot yellow"></span>
+    <span>Team</span>
+    <span class="status-label">10 Members</span>
+  </div>
+  <div class="status-item">
+    <span class="status-dot"></span>
+    <span>Social</span>
+    <a href="https://www.tiktok.com/@nova_syndi0" target="_blank" style="color:var(--white);text-decoration:none;" class="status-label">TikTok Active</a>
+  </div>
+</div>
+
+<script>
+  /* ════════════════════════════════════════════════
+     ✏️  THEME — Options: "default" | "winter" | "sunset" | "christmas" | "halloween" | "newyear" | "valentine"
+  ════════════════════════════════════════════════ */
+
+  /* ════════════════════════════════════════════════
+     ✏️  ANNOUNCEMENT — Set to "" to hide
+  ════════════════════════════════════════════════ */
+  const ANNOUNCEMENT = (typeof GLOBAL_ANNOUNCEMENT !== "undefined" ? GLOBAL_ANNOUNCEMENT : "");
+  /* ════════════════════════════════════════════════ */
+  if (ANNOUNCEMENT.trim() !== "") {
+    document.getElementById('announcement-text').textContent = ANNOUNCEMENT;
+    document.getElementById('announcement').classList.add('visible');
+  }
+
+  function updateTime() {
+    const now = new Date();
+    document.getElementById('live-time').textContent =
+      [now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
+  }
+  updateTime(); setInterval(updateTime, 1000);
+
+  const glow = document.getElementById('cursor-glow');
+  let mx=0,my=0,gx=0,gy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function animGlow(){gx+=(mx-gx)*.08;gy+=(my-gy)*.08;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animGlow);})();
+
+  const container=document.getElementById('particles');
+  const colors=['#ff2d9b','#8b2aff','#f0e8ff','#c84dff'];
+  for(let i=0;i<24;i++){const p=document.createElement('div');p.classList.add('particle');const size=Math.random()*3+1;const color=colors[Math.floor(Math.random()*colors.length)];p.style.cssText=`width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*15}s;box-shadow:0 0 ${size*3}px ${color};`;container.appendChild(p);}
+</script>
+</body>
+</html>
