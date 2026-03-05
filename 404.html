@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — System Failure</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --pink:#ff2d9b; --purple:#8b2aff; --white:#f0e8ff; --dim:rgba(240,232,255,0.5); --bg:#05000f; --border:rgba(139,42,255,0.25); }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow:hidden; display:flex; align-items:center; justify-content:center; cursor:default; }
+    #cursor-glow { position:fixed; width:400px; height:400px; background:radial-gradient(circle, rgba(255,45,155,0.12) 0%, rgba(139,42,255,0.07) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+    body::before { content:''; position:fixed; inset:0; background:linear-gradient(rgba(139,42,255,.04) 1px, transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
+    body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 50%, rgba(255,45,155,.1) 0%, transparent 70%); pointer-events:none; z-index:0; }
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .particle  { position:absolute; border-radius:50%; animation:float-p linear infinite; opacity:0; }
+    @keyframes float-p { 0%{transform:translateY(100vh);opacity:0;}10%{opacity:.5;}90%{opacity:.3;}100%{transform:translateY(-10vh) translateX(30px);opacity:0;} }
+
+    .wrap { position:relative; z-index:1; text-align:center; padding:40px 24px; animation:fade-in .8s ease both; }
+    @keyframes fade-in { from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);} }
+
+    .err-code {
+      font-family:'Orbitron'; font-size:clamp(6rem,20vw,12rem); font-weight:900;
+      line-height:1; letter-spacing:.05em;
+      background:linear-gradient(135deg, var(--white) 0%, var(--pink) 50%, var(--purple) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      filter:drop-shadow(0 0 40px rgba(255,45,155,.3));
+      animation:glitch 4s ease-in-out infinite;
+    }
+    @keyframes glitch {
+      0%,95%,100% { transform:none; filter:drop-shadow(0 0 40px rgba(255,45,155,.3)); }
+      96% { transform:translate(-3px,1px) skewX(-1deg); filter:drop-shadow(3px 0 0 #ff2d9b) drop-shadow(-3px 0 0 #8b2aff); }
+      97% { transform:translate(3px,-1px) skewX(1deg); filter:drop-shadow(-3px 0 0 #ff2d9b) drop-shadow(3px 0 0 #8b2aff); }
+      98% { transform:none; }
+    }
+
+    .err-divider { width:80px; height:1px; background:linear-gradient(90deg,transparent,var(--pink),transparent); margin:16px auto 24px; }
+
+    .err-title { font-family:'Orbitron'; font-size:clamp(.9rem,3vw,1.2rem); font-weight:700; letter-spacing:.3em; text-transform:uppercase; color:var(--dim); margin-bottom:12px; }
+    .err-msg { font-size:1rem; color:var(--dim); letter-spacing:.08em; line-height:1.7; margin-bottom:36px; }
+    .err-btn {
+      display:inline-block; font-family:'Rajdhani'; font-size:.85rem; font-weight:700;
+      letter-spacing:.25em; text-transform:uppercase; text-decoration:none;
+      padding:14px 36px; border-radius:4px;
+      background:linear-gradient(135deg, var(--pink), var(--purple));
+      color:#fff; box-shadow:0 0 24px rgba(255,45,155,.3);
+      transition:box-shadow .25s, transform .25s;
+    }
+    .err-btn:hover { box-shadow:0 0 40px rgba(255,45,155,.55); transform:translateY(-2px); }
+
+    .err-logo { position:fixed; top:24px; left:32px; font-family:'Orbitron'; font-size:.9rem; font-weight:900; letter-spacing:.18em; background:linear-gradient(135deg,var(--pink),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; z-index:10; text-decoration:none; }
+    .err-time { position:fixed; top:24px; right:32px; font-family:'Orbitron'; font-size:.78rem; color:var(--pink); letter-spacing:.1em; border:1px solid rgba(255,45,155,.3); padding:6px 14px; border-radius:4px; background:rgba(255,45,155,.05); z-index:10; }
+
+    @media(max-width:480px){ .err-logo,.err-time{display:none;} }
+  </style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+<div class="particles" id="particles"></div>
+
+<a href="index.html" class="err-logo">NOVA SYNDICATE</a>
+<div class="err-time" id="live-time">00:00:00</div>
+
+<div class="wrap">
+  <div class="err-code">ERROR</div>
+  <div class="err-divider"></div>
+  <div class="err-title">System Failure</div>
+  <div class="err-msg">Something went wrong on our end.<br>We are working on a fix — please come back later.</div>
+  <a href="index.html" class="err-btn">Back to Home</a>
+</div>
+
+<script>
+  /* ════════════════════════════════════════════════
+     ✏️  SYSTEM FAILURE MODE
+     true  = zeigt System Failure auf allen Seiten
+     false = normal
+  ════════════════════════════════════════════════ */
+  const SYSTEM_FAILURE = true;
+  /* ════════════════════════════════════════════════ */
+
+  const MAINTENANCE = false;
+  const _isMaintPage = window.location.href.includes('maintenance.html');
+  if (MAINTENANCE && !_isMaintPage) { window.location.replace('maintenance.html'); }
+
+  const _is404Page = window.location.href.includes('404.html');
+  if (SYSTEM_FAILURE && !_is404Page) { window.location.replace('404.html'); }
+  else if (!SYSTEM_FAILURE && _is404Page) { window.location.replace('index.html'); }
+
+  // Live time
+  function updateTime() {
+    const now = new Date();
+    document.getElementById('live-time').textContent =
+      [now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
+  }
+  updateTime(); setInterval(updateTime, 1000);
+
+  // Cursor glow
+  const glow = document.getElementById('cursor-glow');
+  let mx=0,my=0,gx=0,gy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function animGlow(){gx+=(mx-gx)*.08;gy+=(my-gy)*.08;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animGlow);})();
+
+  // Particles
+  const container=document.getElementById('particles');
+  const colors=['#ff2d9b','#8b2aff','#f0e8ff','#c84dff'];
+  for(let i=0;i<24;i++){const p=document.createElement('div');p.classList.add('particle');const size=Math.random()*3+1;const color=colors[Math.floor(Math.random()*colors.length)];p.style.cssText=`width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*15}s;box-shadow:0 0 ${size*3}px ${color};`;container.appendChild(p);}
+</script>
+</body>
+</html>
