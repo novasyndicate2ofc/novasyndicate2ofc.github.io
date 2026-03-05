@@ -7,7 +7,7 @@
      ✏️  NOVA SYNDICATE — CONFIG
      Hier Theme, Maintenance & Announcement ändern!
   ════════════════════════════════════════════════ */
-  const MAINTENANCE = true;
+  const MAINTENANCE = false;
   const GLOBAL_ANNOUNCEMENT = "";
   /* ════════════════════════════════════════════════ */
 
@@ -275,12 +275,102 @@
       main { padding:110px 16px 90px; }
       #announcement { padding:10px 40px 10px 16px; }
     }
+
+    /* ── HAMBURGER MENU ── */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 1100;
+      background: none;
+      border: none;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all .3s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1050;
+      background: rgba(5,0,15,.97);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      animation: menu-in .25s ease both;
+    }
+    .mobile-menu.open { display: flex; }
+    @keyframes menu-in {
+      from { opacity:0; transform:scale(.97); }
+      to   { opacity:1; transform:scale(1); }
+    }
+    .mobile-menu a {
+      font-family: 'Orbitron'; font-size:1.2rem; font-weight:700;
+      letter-spacing:.2em; text-transform:uppercase;
+      color: var(--dim); text-decoration:none;
+      padding: 16px 40px; border-radius:8px;
+      border: 1px solid transparent;
+      transition: all .2s ease;
+      width: 280px; text-align:center;
+    }
+    .mobile-menu a:hover, .mobile-menu a.active {
+      color: var(--white);
+      border-color: var(--border);
+      background: var(--card);
+    }
+    .mobile-menu a.active {
+      background: linear-gradient(135deg, rgba(255,45,155,.1), rgba(139,42,255,.1));
+      border-color: rgba(255,45,155,.3);
+      color: var(--pink);
+    }
+    .mobile-menu-logo {
+      font-family:'Orbitron'; font-size:.85rem; font-weight:900;
+      letter-spacing:.3em;
+      background:linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:32px;
+    }
+    .mobile-menu-close {
+      position: absolute; top:24px; right:24px;
+      background:none; border:none; color:var(--dim);
+      font-size:1.5rem; cursor:pointer; transition:color .2s;
+    }
+    .mobile-menu-close:hover { color:var(--white); }
+
+    @media(max-width:768px) {
+      .nav-links { display:none; }
+      .hamburger { display:flex; }
+    }
   </style>
 </head>
 <body>
 
 <!-- ─── CURSOR GLOW ─── -->
 <div id="cursor-glow"></div>
+
+<!-- ── MOBILE MENU OVERLAY ── -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
+  <div class="mobile-menu-logo">NOVA SYNDICATE</div>
+  <a href="index.html" >Home</a>
+  <a href="team.html" >Team</a>
+  <a href="status.html" class="active">Status</a>
+  <a href="information.html" >Information</a>
+  <a href="announcements.html" >Announcements</a>
+</div>
 
 <!-- ─── PARTICLES ─── -->
 <div class="particles" id="particles"></div>
@@ -293,7 +383,13 @@
     <li><a href="team.html">Team</a></li>
     <li><a href="status.html" class="active">Status</a></li>
     <li><a href="information.html">Information</a></li>
+    <li><a href="announcements.html">Announcements</a></li>
   </ul>
+  
+<!-- ── MOBILE MENU ── -->
+<button class="hamburger" id="hamburger" onclick="toggleMenu()">
+  <span></span><span></span><span></span>
+</button>
   <div class="nav-time" id="live-time">00:00:00</div>
 </nav>
 
@@ -456,6 +552,15 @@
   }
 
   /* ── THEME SPECIAL ANIMATIONS ── */
+
+  // Hamburger menu
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
 </script>
 </body>
 </html>
