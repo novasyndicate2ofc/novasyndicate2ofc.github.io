@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+<script>
+  /* ════════════════════════════════════════════════
+     ✏️  NOVA SYNDICATE — CONFIG
+     Hier Theme, Maintenance & Announcement ändern!
+  ════════════════════════════════════════════════ */
+  const MAINTENANCE = false;
+  const GLOBAL_ANNOUNCEMENT = "";
+  /* ════════════════════════════════════════════════ */
+
+  // Maintenance
+  const _isMaintPage = window.location.href.includes('maintenance.html');
+  if (MAINTENANCE && !_isMaintPage) { window.location.replace('maintenance.html'); }
+  else if (!MAINTENANCE && _isMaintPage) { window.location.replace('index.html'); }
+
+
+  // Greeting + Particles
+</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Status</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink:   #ff2d9b;
+      --purple: #8b2aff;
+      --white:  #f0e8ff;
+      --dim:    rgba(240,232,255,0.5);
+      --bg:     #05000f;
+      --card:   rgba(139,42,255,0.07);
+      --border: rgba(139,42,255,0.22);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── CURSOR GLOW ── */
+    #cursor-glow {
+      position:fixed; width:300px; height:300px;
+      background: radial-gradient(circle, rgba(255,45,155,0.15) 0%, rgba(139,42,255,0.08) 40%, transparent 70%);
+      border-radius:50%; pointer-events:none; z-index:9998;
+      transform:translate(-50%,-50%);
+    }
+
+    /* ── BG ── */
+    body::before {
+      content:''; position:fixed; inset:0;
+      background:
+        linear-gradient(rgba(139,42,255,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,42,255,.04) 1px, transparent 1px);
+      background-size:60px 60px; pointer-events:none; z-index:0;
+    }
+    body::after {
+      content:''; position:fixed; inset:0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,42,255,.15) 0%, transparent 70%);
+      pointer-events:none; z-index:0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:18px 48px;
+      background:rgba(5,0,15,.75); backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo {
+      font-family:'Orbitron'; font-size:1.1rem; font-weight:900; letter-spacing:.18em;
+      background:linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      text-decoration:none;
+    }
+    .nav-links { display:flex; gap:36px; list-style:none; }
+    .nav-links a {
+      font-family:'Rajdhani'; font-size:.9rem; font-weight:600;
+      letter-spacing:.2em; text-transform:uppercase;
+      color:var(--dim); text-decoration:none; transition:color .2s; position:relative;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-4px; left:0; right:0; height:1px;
+      background:linear-gradient(90deg, var(--pink), var(--purple));
+      transform:scaleX(0); transform-origin:left; transition:transform .25s ease;
+    }
+    .nav-links a:hover, .nav-links a.active { color:var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform:scaleX(1); }
+    .nav-time {
+      font-family:'Orbitron'; font-size:.8rem; color:var(--pink); letter-spacing:.1em;
+      border:1px solid rgba(255,45,155,.3); padding:6px 14px; border-radius:4px;
+      background:rgba(255,45,155,.05);
+    }
+
+    /* ── MAIN ── */
+    main {
+      position:relative; z-index:1;
+      padding:130px 48px 100px;
+      max-width:860px; margin:0 auto;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header { text-align:center; margin-bottom:48px; animation:fade-up .7s ease both; }
+    .page-tag {
+      font-size:.7rem; letter-spacing:.5em; text-transform:uppercase;
+      color:var(--purple); margin-bottom:14px; display:block;
+    }
+    .page-title {
+      font-family:'Orbitron'; font-size:clamp(2rem,5vw,3rem); font-weight:700;
+      background:linear-gradient(135deg, var(--white), var(--pink));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .page-desc { color:var(--dim); margin-top:10px; font-size:1rem; letter-spacing:.05em; }
+
+    @keyframes fade-up {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── OVERALL INDICATOR ── */
+    .overall-bar {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:22px 28px;
+      display:flex; align-items:center; gap:16px;
+      margin-bottom:32px;
+      animation:fade-up .5s .1s ease both;
+    }
+    .overall-dot {
+      width:14px; height:14px; border-radius:50%; flex-shrink:0;
+      animation:dot-pulse 2s ease-in-out infinite;
+    }
+    .dot-green  { background:#2aff8b; box-shadow:0 0 10px #2aff8b; }
+    .dot-yellow { background:#ffd02a; box-shadow:0 0 10px #ffd02a; }
+    .dot-red    { background:#ff3a2a; box-shadow:0 0 10px #ff3a2a; }
+    .dot-blue   { background:#2a9fff; box-shadow:0 0 10px #2a9fff; }
+    @keyframes dot-pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+    .overall-title {
+      font-family:'Orbitron'; font-size:1rem; font-weight:700; letter-spacing:.08em;
+    }
+    .overall-sub { font-size:.8rem; color:var(--dim); margin-top:2px; letter-spacing:.05em; }
+
+    /* ── STATUS CARDS ── */
+    .status-list { display:flex; flex-direction:column; gap:16px; }
+
+    .status-card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:24px 28px;
+      position:relative; overflow:hidden;
+      transition:border-color .25s, box-shadow .25s;
+      animation:fade-up .6s ease both;
+    }
+    .status-card:hover {
+      border-color:rgba(139,42,255,.45);
+      box-shadow:0 8px 40px rgba(139,42,255,.1);
+    }
+    .status-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:1px;
+      background:linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    .card-top {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:18px;
+    }
+    .card-name {
+      font-family:'Orbitron'; font-size:1rem; font-weight:700; letter-spacing:.06em;
+    }
+
+    /* ── STATUS BADGES ── */
+    .badge {
+      font-family:'Rajdhani'; font-size:.7rem; font-weight:700;
+      letter-spacing:.3em; text-transform:uppercase;
+      padding:5px 14px; border-radius:20px; border:1.5px solid;
+    }
+    .badge-online      { color:#2aff8b; border-color:#2aff8b; box-shadow:0 0 10px rgba(42,255,139,.3); }
+    .badge-maintenance { color:#ffd02a; border-color:#ffd02a; box-shadow:0 0 10px rgba(255,208,42,.3); }
+    .badge-offline     { color:#ff3a2a; border-color:#ff3a2a; box-shadow:0 0 10px rgba(255,58,42,.3); }
+    .badge-beta        { color:#2a9fff; border-color:#2a9fff; box-shadow:0 0 10px rgba(42,159,255,.3); }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap {
+      width:100%; height:10px; border-radius:10px;
+      background:rgba(255,255,255,0.06);
+      overflow:hidden; margin-bottom:10px;
+    }
+    .progress-fill {
+      height:100%; border-radius:10px;
+      background:linear-gradient(90deg, #2a9fff, var(--purple), var(--pink));
+      box-shadow:0 0 12px rgba(255,45,155,.4);
+      transition:width 1.2s cubic-bezier(.4,0,.2,1);
+      width:0;
+    }
+    .progress-label {
+      font-size:.8rem; color:var(--dim); letter-spacing:.1em;
+    }
+
+    /* stagger cards */
+    .status-card:nth-child(1){animation-delay:.10s}
+    .status-card:nth-child(2){animation-delay:.18s}
+    .status-card:nth-child(3){animation-delay:.26s}
+    .status-card:nth-child(4){animation-delay:.34s}
+    .status-card:nth-child(5){animation-delay:.42s}
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      position:fixed; bottom:0; left:0; right:0; z-index:999;
+      display:flex; align-items:center; justify-content:center;
+      gap:40px; padding:12px 48px;
+      background:rgba(5,0,15,.82); backdrop-filter:blur(12px);
+      border-top:1px solid var(--border); flex-wrap:wrap;
+    }
+    .status-item {
+      display:flex; align-items:center; gap:10px;
+      font-size:.78rem; letter-spacing:.15em; text-transform:uppercase; color:var(--dim);
+    }
+    .status-dot {
+      width:7px; height:7px; border-radius:50%;
+      background:#2aff8b; box-shadow:0 0 8px #2aff8b;
+      animation:dot-pulse 2s ease-in-out infinite;
+    }
+    .status-dot.yellow { background:#ffd02a; box-shadow:0 0 8px #ffd02a; }
+    .status-label { color:var(--white); font-weight:600; }
+
+    /* ── PARTICLES ── */
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .particle  { position:absolute; border-radius:50%; animation:float-p linear infinite; opacity:0; }
+    @keyframes float-p {
+      0%   { transform:translateY(100vh); opacity:0; }
+      10%  { opacity:.5; }
+      90%  { opacity:.3; }
+      100% { transform:translateY(-10vh) translateX(30px); opacity:0; }
+    }
+
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:linear-gradient(var(--purple),var(--pink)); border-radius:2px; }
+
+    /* ── ANNOUNCEMENT ── */
+    #announcement {
+      display:none; position:fixed; top:70px; left:0; right:0; z-index:990;
+      background:linear-gradient(90deg,rgba(139,42,255,.15),rgba(255,45,155,.15));
+      border-bottom:1px solid var(--border); backdrop-filter:blur(10px);
+      padding:10px 48px; text-align:center;
+    }
+    #announcement.visible { display:block; }
+    .announcement-inner { display:inline-flex;align-items:center;gap:10px;font-size:.82rem;letter-spacing:.12em;color:var(--white); }
+    .announcement-close {
+      position:absolute;right:20px;top:50%;transform:translateY(-50%);
+      background:none;border:none;color:var(--dim);font-size:1rem;cursor:pointer;transition:color .2s;
+    }
+    .announcement-close:hover { color:var(--white); }
+
+    /* ── THEME SPECIAL PARTICLES ── */
+      5%  { opacity:1; }
+      95% { opacity:.8; }
+      100%{ transform:translateY(110vh) rotate(360deg); opacity:0; }
+    }
+
+    @media(max-width:600px){
+      nav { padding:14px 20px; }
+      .nav-links { gap:20px; }
+      .nav-time { display:none; }
+      main { padding:110px 16px 90px; }
+      #announcement { padding:10px 40px 10px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── CURSOR GLOW ─── -->
+<div id="cursor-glow"></div>
+
+<!-- ─── PARTICLES ─── -->
+<div class="particles" id="particles"></div>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="index.html" class="nav-logo">NOVA SYNDICATE</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="status.html" class="active">Status</a></li>
+    <li><a href="information.html">Information</a></li>
+  </ul>
+  <div class="nav-time" id="live-time">00:00:00</div>
+</nav>
+
+<!-- ─── ANNOUNCEMENT ─── -->
+<div id="announcement">
+  <div class="announcement-inner">
+    <span class="announcement-icon">📢</span>
+    <span class="announcement-text" id="announcement-text"></span>
+  </div>
+  <button class="announcement-close" onclick="document.getElementById('announcement').style.display='none'">✕</button>
+</div>
+
+<!-- ─── CONTENT ─── -->
+<main>
+  <div class="page-header">
+    <span class="page-tag">✦ Nova Syndicate</span>
+    <h1 class="page-title">System Status</h1>
+    <p class="page-desc">Live overview of all Nova Syndicate services</p>
+  </div>
+
+  <!-- OVERALL -->
+  <div class="overall-bar" id="overall-bar">
+    <div class="overall-dot dot-green" id="overall-dot"></div>
+    <div>
+      <div class="overall-title" id="overall-title">All Systems Operational</div>
+      <div class="overall-sub" id="overall-sub">No incidents detected</div>
+    </div>
+  </div>
+
+  <!-- STATUS CARDS — edit STATUS_ITEMS below in the script -->
+  <div class="status-list" id="status-list"></div>
+</main>
+
+<!-- ─── STATUS BAR ─── -->
+<div class="status-bar">
+  <div class="status-item">
+    <span class="status-dot"></span>
+    <span>Discord</span>
+    <a href="https://discord.gg/SkHmpbVYzw" target="_blank" style="color:var(--white);text-decoration:none;" class="status-label">Online</a>
+  </div>
+  <div class="status-item">
+    <span class="status-dot yellow"></span>
+    <span>Team</span>
+    <span class="status-label">10 Members</span>
+  </div>
+  <div class="status-item">
+    <span class="status-dot"></span>
+    <span>Social</span>
+    <a href="https://www.tiktok.com/@nova_syndi0" target="_blank" style="color:var(--white);text-decoration:none;" class="status-label">TikTok Active</a>
+  </div>
+</div>
+
+<script>
+  /* ════════════════════════════════════════════════
+     ✏️  THEME — Options: "default" | "winter" | "sunset" | "christmas" | "halloween" | "newyear" | "valentine"
+  ════════════════════════════════════════════════ */
+
+  /* ════════════════════════════════════════════════
+     ✏️  ANNOUNCEMENT — Set to "" to hide
+  ════════════════════════════════════════════════ */
+  const ANNOUNCEMENT = (typeof GLOBAL_ANNOUNCEMENT !== "undefined" ? GLOBAL_ANNOUNCEMENT : "");
+
+  /* ════════════════════════════════════════════════
+     ✏️  STATUS ITEMS — edit name, status & progress
+     status: "online" | "maintenance" | "offline" | "beta"
+  ════════════════════════════════════════════════ */
+  const STATUS_ITEMS = [
+    { name: "Core Network",    status: "online",      progress: 100 },
+    { name: "Discord Server",  status: "online",      progress: 100 },
+    { name: "Website",         status: "maintenance", progress: 75  },
+    { name: "Expansion",       status: "beta",        progress: 40  },
+    { name: "Team",            status: "online",     progress: 100  },
+  ];
+  /* ════════════════════════════════════════════════ */
+
+  if (ANNOUNCEMENT.trim() !== "") {
+    document.getElementById('announcement-text').textContent = ANNOUNCEMENT;
+    document.getElementById('announcement').classList.add('visible');
+  }
+
+  const BADGE_MAP = {
+    online:      { label: "Online",      cls: "badge-online"      },
+    maintenance: { label: "Maintenance", cls: "badge-maintenance" },
+    offline:     { label: "Offline",     cls: "badge-offline"     },
+    beta:        { label: "Beta",        cls: "badge-beta"        },
+  };
+
+  const list = document.getElementById('status-list');
+  STATUS_ITEMS.forEach(item => {
+    const b = BADGE_MAP[item.status] || BADGE_MAP.online;
+    const card = document.createElement('div');
+    card.className = 'status-card';
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-name">${item.name}</div>
+        <span class="badge ${b.cls}">${b.label}</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-fill" data-progress="${item.progress}"></div>
+      </div>
+      <div class="progress-label">${item.progress}%</div>
+    `;
+    list.appendChild(card);
+  });
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.querySelectorAll('.progress-fill').forEach(bar => {
+        bar.style.width = bar.dataset.progress + '%';
+      });
+    }, 400);
+  });
+
+  const hasOffline = STATUS_ITEMS.some(i => i.status === 'offline');
+  const hasMaint   = STATUS_ITEMS.some(i => i.status === 'maintenance');
+  const hasBeta    = STATUS_ITEMS.some(i => i.status === 'beta');
+  const dot   = document.getElementById('overall-dot');
+  const title = document.getElementById('overall-title');
+  const sub   = document.getElementById('overall-sub');
+  if (hasOffline) {
+    dot.className = 'overall-dot dot-red';
+    title.textContent = 'Service Disruption';
+    sub.textContent   = 'One or more services are offline';
+  } else if (hasMaint) {
+    dot.className = 'overall-dot dot-yellow';
+    title.textContent = 'Partial Maintenance';
+    sub.textContent   = 'Some services are under maintenance';
+  } else if (hasBeta) {
+    dot.className = 'overall-dot dot-blue';
+    title.textContent = 'Beta Services Active';
+    sub.textContent   = 'Some features are in beta';
+  }
+
+  function updateTime() {
+    const now = new Date();
+    document.getElementById('live-time').textContent =
+      [now.getHours(), now.getMinutes(), now.getSeconds()]
+        .map(n => String(n).padStart(2,'0')).join(':');
+  }
+  updateTime(); setInterval(updateTime, 1000);
+
+  const glow = document.getElementById('cursor-glow');
+  let mx=0, my=0, gx=0, gy=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  (function animGlow() {
+    gx+=(mx-gx)*.08; gy+=(my-gy)*.08;
+    glow.style.left=gx+'px'; glow.style.top=gy+'px';
+    requestAnimationFrame(animGlow);
+  })();
+
+  const container = document.getElementById('particles');
+  const colors = ['#ff2d9b','#8b2aff','#f0e8ff','#c84dff'];
+  for (let i=0; i<24; i++) {
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    const size = Math.random()*3+1;
+    const color = colors[Math.floor(Math.random()*colors.length)];
+    p.style.cssText = `width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*15}s;box-shadow:0 0 ${size*3}px ${color};`;
+    container.appendChild(p);
+  }
+
+  /* ── THEME SPECIAL ANIMATIONS ── */
+</script>
+</body>
+</html>
