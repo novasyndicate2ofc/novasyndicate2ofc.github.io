@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Offline</title>
+  <script>
+  /* ════════════════════════════════════════════════
+     ✏️  NOVA SYNDICATE — CONFIG
+  ════════════════════════════════════════════════ */
+  const MAINTENANCE = false;
+  const SYSTEM_FAILURE = false;
+  const OFFLINE = true;           // ✏️ true = alle Seiten → offline
+  const OFFLINE_REASON = "Server Maintenance";       // ✏️ z.B. "Server maintenance"
+  const OFFLINE_UNTIL  = "Tmr 11:50 AM";       // ✏️ z.B. "Tmr 11:50 AM"
+  /* ════════════════════════════════════════════════ */
+
+  const _isOfflinePage = window.location.href.includes('offline.html');
+  if (OFFLINE && !_isOfflinePage) { window.location.replace('offline.html'); }
+  else if (!OFFLINE && _isOfflinePage) { window.location.replace('index.html'); }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --pink:#ff2d9b; --purple:#8b2aff; --white:#f0e8ff; --dim:rgba(240,232,255,0.5); --bg:#05000f; --border:rgba(139,42,255,0.25); }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow:hidden; display:flex; align-items:center; justify-content:center; cursor:default; }
+
+    #cursor-glow { position:fixed; width:400px; height:400px; background:radial-gradient(circle, rgba(255,45,155,0.1) 0%, rgba(139,42,255,0.06) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+    body::before { content:''; position:fixed; inset:0; background:linear-gradient(rgba(139,42,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
+    body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,42,255,.12) 0%, transparent 70%); pointer-events:none; z-index:0; }
+
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .particle  { position:absolute; border-radius:50%; animation:float-p linear infinite; opacity:0; }
+    @keyframes float-p { 0%{transform:translateY(100vh);opacity:0;}10%{opacity:.5;}90%{opacity:.3;}100%{transform:translateY(-10vh);opacity:0;} }
+
+    .err-logo { position:fixed; top:24px; left:32px; font-family:'Orbitron'; font-size:.9rem; font-weight:900; letter-spacing:.18em; background:linear-gradient(135deg,var(--pink),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; z-index:10; text-decoration:none; }
+    .err-time { position:fixed; top:24px; right:32px; font-family:'Orbitron'; font-size:.78rem; color:var(--pink); letter-spacing:.1em; border:1px solid rgba(255,45,155,.3); padding:6px 14px; border-radius:4px; background:rgba(255,45,155,.05); z-index:10; }
+
+    .wrap { position:relative; z-index:1; text-align:center; padding:40px 24px; animation:fade-in .8s ease both; }
+    @keyframes fade-in { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+
+    .offline-icon {
+      font-size:3rem; display:block; margin-bottom:20px;
+      animation:icon-pulse 2s ease-in-out infinite;
+    }
+    @keyframes icon-pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.6;transform:scale(.95);} }
+
+    .offline-name {
+      font-family:'Orbitron'; font-size:clamp(1.4rem,5vw,2.4rem); font-weight:900;
+      letter-spacing:.12em; text-transform:uppercase;
+      background:linear-gradient(135deg, var(--white), var(--pink));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:8px;
+    }
+
+    .offline-status {
+      font-family:'Orbitron'; font-size:.85rem; font-weight:700;
+      letter-spacing:.35em; text-transform:uppercase;
+      color:#ff3a3a; margin-bottom:28px;
+      display:flex; align-items:center; justify-content:center; gap:10px;
+    }
+    .offline-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:#ff3a3a; box-shadow:0 0 10px #ff3a3a;
+      animation:dot-blink .8s step-end infinite;
+    }
+    @keyframes dot-blink { 50%{opacity:0;} }
+
+    .offline-divider { width:60px; height:1px; background:linear-gradient(90deg,transparent,rgba(255,45,155,.5),transparent); margin:0 auto 28px; }
+
+    .offline-card {
+      display:inline-block;
+      background:rgba(255,58,58,.06);
+      border:1px solid rgba(255,58,58,.25);
+      border-radius:10px;
+      padding:24px 40px;
+      min-width:280px;
+      backdrop-filter:blur(10px);
+    }
+
+    .offline-row { margin-bottom:16px; }
+    .offline-row:last-child { margin-bottom:0; }
+    .offline-label {
+      font-family:'Orbitron'; font-size:.6rem; font-weight:700;
+      letter-spacing:.4em; text-transform:uppercase;
+      color:rgba(255,58,58,.7); margin-bottom:6px;
+    }
+    .offline-value {
+      font-size:1.05rem; font-weight:600; letter-spacing:.08em;
+      color:var(--white);
+    }
+    .offline-value.empty { color:var(--dim); font-style:italic; font-size:.9rem; }
+
+    .discord-link {
+      display:inline-flex; align-items:center; gap:8px;
+      margin-top:28px; font-family:'Rajdhani'; font-size:.82rem;
+      font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+      color:var(--dim); text-decoration:none;
+      border:1px solid var(--border); padding:10px 24px; border-radius:4px;
+      transition:all .25s;
+    }
+    .discord-link:hover { color:var(--white); border-color:rgba(255,45,155,.4); background:rgba(255,45,155,.05); }
+
+    @media(max-width:480px){ .err-logo,.err-time{display:none;} .offline-card{padding:20px 24px; min-width:240px;} }
+  </style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+<div class="particles" id="particles"></div>
+
+<a href="index.html" class="err-logo">NOVA SYNDICATE</a>
+<div class="err-time" id="live-time">00:00:00</div>
+
+<div class="wrap">
+  <span class="offline-icon">📡</span>
+  <div class="offline-name">Nova Syndicate</div>
+  <div class="offline-status">
+    <span class="offline-dot"></span>
+    is offline
+  </div>
+  <div class="offline-divider"></div>
+  <div class="offline-card">
+    <div class="offline-row">
+      <div class="offline-label">Reason</div>
+      <div class="offline-value" id="offline-reason-text"></div>
+    </div>
+    <div class="offline-row">
+      <div class="offline-label">Until</div>
+      <div class="offline-value" id="offline-until-text"></div>
+    </div>
+  </div>
+  <br>
+  <a href="https://discord.gg/SkHmpbVYzw" target="_blank" class="discord-link">💬 Join our Discord</a>
+</div>
+
+<script>
+  // Fill in reason + until from config
+  const reasonEl = document.getElementById('offline-reason-text');
+  const untilEl  = document.getElementById('offline-until-text');
+
+  reasonEl.textContent = (typeof OFFLINE_REASON !== 'undefined' && OFFLINE_REASON.trim() !== '') ? OFFLINE_REASON : '—';
+  if (!OFFLINE_REASON || OFFLINE_REASON.trim() === '') reasonEl.classList.add('empty');
+
+  untilEl.textContent = (typeof OFFLINE_UNTIL !== 'undefined' && OFFLINE_UNTIL.trim() !== '') ? OFFLINE_UNTIL : '—';
+  if (!OFFLINE_UNTIL || OFFLINE_UNTIL.trim() === '') untilEl.classList.add('empty');
+
+  // Reload every 30s so when OFFLINE=false it auto-redirects
+  setInterval(() => { window.location.reload(); }, 30000);
+
+  // Live time
+  function updateTime() {
+    const now = new Date();
+    document.getElementById('live-time').textContent =
+      [now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
+  }
+  updateTime(); setInterval(updateTime, 1000);
+
+  // Cursor glow
+  const glow = document.getElementById('cursor-glow');
+  let mx=0,my=0,gx=0,gy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function animGlow(){gx+=(mx-gx)*.08;gy+=(my-gy)*.08;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animGlow);})();
+
+  // Particles
+  const container=document.getElementById('particles');
+  const colors=['#ff2d9b','#8b2aff','#f0e8ff','#c84dff'];
+  for(let i=0;i<24;i++){const p=document.createElement('div');p.classList.add('particle');const size=Math.random()*3+1;const color=colors[Math.floor(Math.random()*colors.length)];p.style.cssText=`width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*15}s;box-shadow:0 0 ${size*3}px ${color};`;container.appendChild(p);}
+</script>
+</body>
+</html>
