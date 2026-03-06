@@ -86,7 +86,8 @@
     body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow-x:hidden; cursor:default; }
 
     #cursor-glow {
-      will-change: transform; position:fixed; width:300px; height:300px; background:radial-gradient(circle, rgba(255,45,155,0.15) 0%, rgba(139,42,255,0.08) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+      will-change: transform;
+      transform: translate(-50%, -50%); position:fixed; width:300px; height:300px; background:radial-gradient(circle, rgba(255,45,155,0.15) 0%, rgba(139,42,255,0.08) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
     body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,42,255,.15) 0%, transparent 70%); pointer-events:none; z-index:0; }
 
     /* ── NAV ── */
@@ -444,8 +445,8 @@
   /* ── Cursor Glow ── */
   const glow = document.getElementById('cursor-glow');
   document.addEventListener('mousemove', e => {
-    glow.style.left = (e.clientX - 150) + 'px';
-    glow.style.top  = (e.clientY - 150) + 'px';
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
   });
 
   /* ── Particle + Grid System ── */
