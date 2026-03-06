@@ -9,9 +9,9 @@
   ════════════════════════════════════════════════ */
   const MAINTENANCE = false;
   const SYSTEM_FAILURE = false;
-  const OFFLINE = true;           // ✏️ true = alle Seiten → offline
-  const OFFLINE_REASON = "Server Maintenance";       // ✏️ z.B. "Server maintenance"
-  const OFFLINE_UNTIL  = "Tmr 11:50 AM";       // ✏️ z.B. "Tmr 11:50 AM"
+  const OFFLINE = false;           // ✏️ true = alle Seiten → offline
+  const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
+  const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
   const GLOBAL_ANNOUNCEMENT = "";
   /* ════════════════════════════════════════════════ */
 
@@ -70,18 +70,19 @@
       overflow-x: hidden;
       overflow-y: auto;
       cursor: default;
+      padding-bottom: 60px;
     }
 
     /* ── CURSOR GLOW ONLY ── */
     #cursor-glow {
+      will-change: transform;
       position: fixed;
       width: 300px; height: 300px;
       background: radial-gradient(circle, rgba(255,45,155,0.18) 0%, rgba(139,42,255,0.10) 40%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9998;
-      transform: translate(-50%,-50%);
-      transition: transform .15s ease;
+      
     }
 
     /* ── LOADER ── */
@@ -248,6 +249,7 @@
       min-height: 90vh;
       text-align: center;
       padding: 120px 48px 60px;
+      width: 100%;
     }
     .hero-tag {
       font-size: .75rem; letter-spacing: .5em; text-transform: uppercase;
@@ -442,13 +444,6 @@
 
     /* ── FLOATING PARTICLES ── */
     .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-    .particle {
-      position:absolute; border-radius:50%;
-      animation: float-particle linear infinite;
-      opacity: 0;
-    }
-    @keyframes float-particle {
-      0%   { transform: translateY(100vh) translateX(0); opacity:0; }
       10%  { opacity: .6; }
       90%  { opacity: .4; }
       100% { transform: translateY(-10vh) translateX(40px); opacity:0; }
@@ -459,6 +454,9 @@
       position: relative; z-index: 1;
       padding: 0 48px 120px;
       text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
     }
     .collab-label {
       font-family: 'Orbitron'; font-size: .7rem; font-weight: 700;
@@ -495,6 +493,15 @@
     .collab-card-top {
       position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--purple), var(--pink));
+    }
+    .collab-partner-badge {
+      font-family: 'Orbitron'; font-size: .58rem; font-weight: 700;
+      letter-spacing: .4em; text-transform: uppercase;
+      color: var(--purple);
+      border: 1px solid rgba(139,42,255,.4);
+      background: rgba(139,42,255,.08);
+      padding: 4px 12px; border-radius: 3px;
+      display: inline-block; margin-bottom: 16px;
     }
     .collab-avatar {
       width: 72px; height: 72px; border-radius: 50%;
@@ -668,6 +675,8 @@
       .nav-links { display:none; }
       .hamburger { display:flex; }
     }
+    /* ── PARTICLES ── */
+    #particles { position:fixed; inset:0; z-index:0; pointer-events:none; }
   </style>
 </head>
 <body>
@@ -694,7 +703,7 @@
 </div>
 
 <!-- ─── PARTICLES ─── -->
-<div class="particles" id="particles"></div>
+<canvas id="particles"></canvas>
 
 <!-- ─── NAV ─── -->
 <nav>
@@ -724,6 +733,7 @@
 </div>
 
 <!-- ─── MAIN PAGE ─── -->
+<div style="display:flex; flex-direction:column; align-items:center; width:100%;">
 <div id="page-main">
   <div class="hero-tag">✦ Official Network</div>
   <h1 class="hero-title">NOVA<br>SYNDICATE</h1>
@@ -742,6 +752,7 @@
   <div class="collab-grid">
     <div class="collab-card">
       <div class="collab-card-top"></div>
+      <div class="collab-partner-badge">✦ PARTNERS</div>
       <div class="collab-avatar">
         <img src="max.png" alt="Max" onerror="this.style.display='none'">M
       </div>
@@ -750,6 +761,7 @@
       <span class="collab-btn">Visit Website</span>
     </div>
   </div>
+</div>
 </div>
 
 <!-- ─── STATUS BAR ─── -->
@@ -772,72 +784,21 @@
 </div>
 
 <script>
-  /* ── ANNOUNCEMENT ── */
-  const ANNOUNCEMENT = (typeof GLOBAL_ANNOUNCEMENT !== 'undefined' ? GLOBAL_ANNOUNCEMENT : "");
-  if (ANNOUNCEMENT.trim() !== "") {
-    const banner = document.getElementById('announcement');
-    document.getElementById('announcement-text').textContent = ANNOUNCEMENT;
-    banner.classList.add('visible');
-  }
-
-  /* ── LOADER ── */
-  setTimeout(() => {
-    const loader = document.getElementById('loader');
-    if (loader) {
-      loader.classList.add('hidden');
-      setTimeout(() => loader.remove(), 900);
-    }
-  }, 2400);
-  /* ── LIVE TIME ── */
-  function updateTime() {
-    const now = new Date();
-    const h = String(now.getHours()).padStart(2,'0');
-    const m = String(now.getMinutes()).padStart(2,'0');
-    const s = String(now.getSeconds()).padStart(2,'0');
-    document.getElementById('live-time').textContent = `${h}:${m}:${s}`;
-  }
-  updateTime();
-  setInterval(updateTime, 1000);
-
-  /* ── CURSOR GLOW ── */
-  const glow = document.getElementById('cursor-glow');
-  let mx=0, my=0, gx=0, gy=0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
+  /* ── Loader ── */
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const loader = document.getElementById('loader');
+      if (loader) loader.classList.add('hidden');
+    }, 2200);
   });
 
-  function animGlow() {
-    gx += (mx - gx) * .08;
-    gy += (my - gy) * .08;
-    glow.style.left = gx + 'px';
-    glow.style.top  = gy + 'px';
-    requestAnimationFrame(animGlow);
+  /* ── Live time ── */
+  function updateTime() {
+    const now = new Date();
+    document.getElementById('live-time').textContent =
+      [now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
   }
-  animGlow();
-
-  /* ── PARTICLES (default) ── */
-  const container = document.getElementById('particles');
-  const colors = ['#ff2d9b','#8b2aff','#f0e8ff','#c84dff'];
-
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    p.classList.add('particle');
-    const size = Math.random() * 3 + 1;
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const left  = Math.random() * 100;
-    const dur   = Math.random() * 14 + 10;
-    const delay = Math.random() * 15;
-    p.style.cssText = `
-      width:${size}px; height:${size}px;
-      background:${color};
-      left:${left}%;
-      animation-duration:${dur}s;
-      animation-delay:${delay}s;
-      box-shadow: 0 0 ${size*3}px ${color};
-    `;
-    container.appendChild(p);
-  }
+  updateTime(); setInterval(updateTime, 1000);
 
   // Hamburger menu
   function toggleMenu() {
@@ -847,6 +808,124 @@
     btn.classList.toggle('open');
     document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
   }
+
+  /* ── Cursor Glow ── */
+  const glow = document.getElementById('cursor-glow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = (e.clientX - 150) + 'px';
+    glow.style.top  = (e.clientY - 150) + 'px';
+  });
+
+  /* ── Particle + Grid System ── */
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const mouse = {x:-1000, y:-1000};
+  const isMobile = window.matchMedia('(max-width:767px)').matches;
+
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+  resize();
+  window.addEventListener('resize',()=>{resize();initParticles()});
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+
+  const GRID_SIZE = isMobile ? 48 : 64;
+  let gridOffset = 0;
+
+  function drawGrid(){
+    const cols = Math.ceil(W / GRID_SIZE) + 2;
+    const rows = Math.ceil(H / GRID_SIZE) + 2;
+    const ox = gridOffset % GRID_SIZE;
+    ctx.save();
+    for(let c = -1; c < cols; c++){
+      const x = c * GRID_SIZE - ox;
+      const bright = (Math.round((x + ox) / GRID_SIZE) % 4 === 0);
+      ctx.beginPath();ctx.moveTo(x, 0);ctx.lineTo(x, H);
+      ctx.strokeStyle = bright ? 'rgba(255,45,155,.08)' : 'rgba(139,42,255,.04)';
+      ctx.lineWidth = bright ? 1 : 0.5;ctx.stroke();
+    }
+    for(let r = -1; r < rows; r++){
+      const y = r * GRID_SIZE - ox;
+      const bright = (Math.round((y + ox) / GRID_SIZE) % 4 === 0);
+      ctx.beginPath();ctx.moveTo(0, y);ctx.lineTo(W, y);
+      ctx.strokeStyle = bright ? 'rgba(255,45,155,.08)' : 'rgba(139,42,255,.04)';
+      ctx.lineWidth = bright ? 1 : 0.5;ctx.stroke();
+    }
+    for(let c = -1; c < cols; c++){
+      for(let r = -1; r < rows; r++){
+        const x = c * GRID_SIZE - ox;
+        const y = r * GRID_SIZE - ox;
+        const baseAlpha = (Math.round((x+ox)/GRID_SIZE) % 4 === 0 && Math.round((y+ox)/GRID_SIZE) % 4 === 0) ? 0.2 : 0.08;
+        ctx.beginPath();ctx.arc(x, y, 1, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(139,42,255,${baseAlpha})`;ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  const COLORS=[[255,45,155],[139,42,255],[192,100,255],[240,180,255],[255,255,255]];
+
+  class Particle{
+    constructor(init){this.reset(init)}
+    reset(randomY){
+      this.x=Math.random()*W;
+      this.y=randomY?Math.random()*H:H+10;
+      this.vx=(Math.random()-.5)*.3;
+      this.vy=-(Math.random()*.6+.35);
+      this.size=Math.random()*1.5+.3;
+      this.life=0;this.maxLife=Math.random()*300+400;
+      this.wave=Math.random()*Math.PI*2;
+      this.twinkle=Math.random()*Math.PI*2;
+      const c=COLORS[Math.floor(Math.random()*COLORS.length)];
+      this.r=c[0];this.g=c[1];this.b=c[2];
+    }
+    update(){
+      this.life++;this.wave+=.018;this.twinkle+=.038;
+      this.x+=this.vx+Math.sin(this.wave)*.16;
+      this.y+=this.vy;
+      if(this.life>this.maxLife||this.y<-20)this.reset(false);
+    }
+    draw(){
+      const p=this.life/this.maxLife;
+      const fade=p<.08?p/.08:p>.9?(1-p)/.1:1;
+      const alpha=fade*(0.65+0.35*Math.sin(this.twinkle));
+      const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*4);
+      g.addColorStop(0,`rgba(${this.r},${this.g},${this.b},${alpha*.55})`);
+      g.addColorStop(1,`rgba(${this.r},${this.g},${this.b},0)`);
+      ctx.beginPath();ctx.arc(this.x,this.y,this.size*4,0,Math.PI*2);
+      ctx.fillStyle=g;ctx.fill();
+      ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${this.r},${this.g},${this.b},${alpha})`;ctx.fill();
+    }
+  }
+
+  function drawLines(){
+    if(isMobile)return;
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(255,45,155,${(1-d/120)*.18})`;ctx.lineWidth=.5;ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function initParticles(){
+    const count=isMobile?50:Math.min(Math.floor((W*H)/9000),120);
+    particles=Array.from({length:count},()=>new Particle(true));
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    gridOffset += 0.3;
+    drawGrid();
+    drawLines();
+    particles.forEach(p=>{p.update();p.draw()});
+    requestAnimationFrame(animate);
+  }
+  initParticles();animate();
 </script>
 </body>
 </html>
