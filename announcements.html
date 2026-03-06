@@ -172,6 +172,9 @@
     .ann-card.updated  { border-color:rgba(80,180,255,.3); }
     .ann-card.updated::before  { background:linear-gradient(90deg,#0066cc,#50b4ff); }
     .ann-card.updated:hover  { border-color:rgba(80,180,255,.6); box-shadow:0 8px 40px rgba(80,180,255,.08); }
+    .ann-card.soon     { border-color:rgba(200,100,255,.3); }
+    .ann-card.soon::before     { background:linear-gradient(90deg,#8800cc,#c864ff); }
+    .ann-card.soon:hover     { border-color:rgba(200,100,255,.6); box-shadow:0 8px 40px rgba(200,100,255,.08); }
     .ann-card.new::before      { background:linear-gradient(90deg,#00aa55,#4dff91); }
     .ann-card.new:hover      { border-color:rgba(100,255,100,.6); box-shadow:0 8px 40px rgba(100,255,100,.08); }
     .ann-card.default::before  { background:linear-gradient(90deg, var(--purple), var(--pink)); }
@@ -194,6 +197,7 @@
     .ann-badge.offline { background:rgba(255,100,0,.15); color:#ff6600; border:1px solid rgba(255,100,0,.4); animation:badge-blink .8s step-end infinite; }
     .ann-badge.new      { background:rgba(100,255,100,.15); color:#4dff91; border:1px solid rgba(100,255,100,.35); }
     .ann-badge.updated  { background:rgba(80,180,255,.15); color:#50b4ff; border:1px solid rgba(80,180,255,.35); }
+    .ann-badge.soon     { background:rgba(200,100,255,.15); color:#c864ff; border:1px solid rgba(200,100,255,.35); }
     .ann-badge.default  { background:rgba(255,45,155,.1);  color:var(--pink); border:1px solid rgba(255,45,155,.3); }
 
     .ann-title { font-family:'Orbitron'; font-size:.9rem; font-weight:700; letter-spacing:.1em; color:var(--white); }
@@ -389,7 +393,7 @@
 <script>
   /* ════════════════════════════════════════════════
      ✏️  ANNOUNCEMENTS — Hier eintragen!
-     type: "warning" | "info" | "success" | "error" | "offline" | "system_failure" | "new" | "updated" | "default"
+     type: "warning" | "info" | "success" | "error" | "offline" | "system_failure" | "new" | "updated" | "soon" | "default"
      date: "DD.MM.YYYY"
   ════════════════════════════════════════════════ */
   const ANNOUNCEMENTS = [
@@ -398,6 +402,18 @@
       title: "Maintenance",
       text: "Website is going in Maintenance at 8 PM untill Tmr 11:50 AM.",
       date: "05.03.2026"
+    },
+    {
+      type: "soon",
+      title: "Social Page",
+      text: "The Social Page is coming soon",
+      date: "06.03.2026"
+    },
+    {
+      type: "soon",
+      title: "Roster Page",
+      text: "The Roster Page is coming out soon",
+      date: "06.03.2026"
     },
   ];
   /* ════════════════════════════════════════════════ */
