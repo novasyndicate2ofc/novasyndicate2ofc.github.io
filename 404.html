@@ -9,7 +9,8 @@
     :root { --pink:#ff2d9b; --purple:#8b2aff; --white:#f0e8ff; --dim:rgba(240,232,255,0.5); --bg:#05000f; --border:rgba(139,42,255,0.25); }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow:hidden; display:flex; align-items:center; justify-content:center; cursor:default; }
-    #cursor-glow { position:fixed; width:400px; height:400px; background:radial-gradient(circle, rgba(255,45,155,0.12) 0%, rgba(139,42,255,0.07) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+    #cursor-glow {
+      will-change: transform; position:fixed; width:400px; height:400px; background:radial-gradient(circle, rgba(255,45,155,0.12) 0%, rgba(139,42,255,0.07) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
     body::before { content:''; position:fixed; inset:0; background:linear-gradient(rgba(139,42,255,.04) 1px, transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
     body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 50%, rgba(255,45,155,.1) 0%, transparent 70%); pointer-events:none; z-index:0; }
     /* ── PARTICLES ── */
@@ -70,29 +71,7 @@
 </div>
 
 <script>
-  /* ════════════════════════════════════════════════
-     ✏️  SYSTEM FAILURE MODE
-     true  = zeigt System Failure auf allen Seiten
-     false = normal
-  ════════════════════════════════════════════════ */
-  const SYSTEM_FAILURE = false;
-  const OFFLINE = false;           // ✏️ true = alle Seiten → offline
-  const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
-  const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
-  /* ════════════════════════════════════════════════ */
-
-  const MAINTENANCE = false;
-  const _isMaintPage = window.location.href.includes('maintenance.html');
-  if (MAINTENANCE && !_isMaintPage) { window.location.replace('maintenance.html'); }
-
-  const _is404Page = window.location.href.includes('404.html');
-  const _isOfflinePage = window.location.href.includes('offline.html');
-  if (SYSTEM_FAILURE && !_is404Page) { window.location.replace('404.html'); }
-  else if (!SYSTEM_FAILURE && _is404Page) { window.location.replace('index.html'); }
-  if (OFFLINE && !_isOfflinePage) { window.location.replace('offline.html'); }
-  else if (!OFFLINE && _isOfflinePage) { window.location.replace('index.html'); }
-
-  // Live time
+  /* ── Live time ── */
   function updateTime() {
     const now = new Date();
     document.getElementById('live-time').textContent =
@@ -100,11 +79,21 @@
   }
   updateTime(); setInterval(updateTime, 1000);
 
-  // Cursor glow
+  // Hamburger menu
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
+
+  /* ── Cursor Glow ── */
   const glow = document.getElementById('cursor-glow');
-  let mx=0,my=0,gx=0,gy=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  (function animGlow(){gx+=(mx-gx)*.08;gy+=(my-gy)*.08;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animGlow);})();
+  document.addEventListener('mousemove', e => {
+    glow.style.left = (e.clientX - 150) + 'px';
+    glow.style.top  = (e.clientY - 150) + 'px';
+  });
 
   /* ── Particle + Grid System ── */
   const canvas = document.getElementById('particles');
@@ -118,7 +107,6 @@
   window.addEventListener('resize',()=>{resize();initParticles()});
   window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
 
-  /* ── Animated grid ── */
   const GRID_SIZE = isMobile ? 48 : 64;
   let gridOffset = 0;
 
