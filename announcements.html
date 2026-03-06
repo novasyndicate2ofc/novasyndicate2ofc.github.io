@@ -85,9 +85,8 @@
     html { scroll-behavior:smooth; }
     body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow-x:hidden; cursor:default; }
 
-    #cursor-glow { position:fixed; width:300px; height:300px; background:radial-gradient(circle, rgba(255,45,155,0.15) 0%, rgba(139,42,255,0.08) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
-
-    body::before { content:''; position:fixed; inset:0; background: linear-gradient(rgba(139,42,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139,42,255,.04) 1px, transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
+    #cursor-glow {
+      will-change: transform; position:fixed; width:300px; height:300px; background:radial-gradient(circle, rgba(255,45,155,0.15) 0%, rgba(139,42,255,0.08) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
     body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,42,255,.15) 0%, transparent 70%); pointer-events:none; z-index:0; }
 
     /* ── NAV ── */
@@ -389,16 +388,21 @@
       text: "Website is going in Maintenance at 8 PM untill Tmr 11:50 AM.",
       date: "05.03.2026"
     },
-    {
-      type: "offline",
-      title: "Offline",
-      text: "Nova Syndicate is currently offline. Reason: Server Maintenance Until: Tmr 12:30 AM",
-      date: "05.03.2026"
-    },
+    // {
+    //   type: "offline",
+    //   title: "Offline",
+    //   text: "Nova Syndicate is currently offline. Reason: ... Until: ...",
+    //   date: "05.03.2026"
+    // },
+    // {
+    //   type: "system_failure",
+    //   title: "System Failure",
+    //   text: "The system is currently down. We are working on a fix.",
+    //   date: "05.03.2026"
+    // },
   ];
   /* ════════════════════════════════════════════════ */
 
-  // Render announcements (newest first)
   const list = document.getElementById('ann-list');
   const reversed = [...ANNOUNCEMENTS].reverse();
 
@@ -420,14 +424,7 @@
     });
   }
 
-  // Announcement banner
-  const ANNOUNCEMENT = (typeof GLOBAL_ANNOUNCEMENT !== 'undefined' ? GLOBAL_ANNOUNCEMENT : "");
-  if (ANNOUNCEMENT.trim() !== "") {
-    document.getElementById('announcement-text').textContent = ANNOUNCEMENT;
-    document.getElementById('announcement').classList.add('visible');
-  }
-
-  // Live time
+  /* ── Live time ── */
   function updateTime() {
     const now = new Date();
     document.getElementById('live-time').textContent =
@@ -435,23 +432,67 @@
   }
   updateTime(); setInterval(updateTime, 1000);
 
-  // Cursor glow
-  const glow = document.getElementById('cursor-glow');
-  let mx=0,my=0,gx=0,gy=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  (function animGlow(){gx+=(mx-gx)*.08;gy+=(my-gy)*.08;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animGlow);})();
+  // Hamburger menu
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
 
-  /* ── Particle System ── */
+  /* ── Cursor Glow ── */
+  const glow = document.getElementById('cursor-glow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = (e.clientX - 150) + 'px';
+    glow.style.top  = (e.clientY - 150) + 'px';
+  });
+
+  /* ── Particle + Grid System ── */
   const canvas = document.getElementById('particles');
   const ctx = canvas.getContext('2d');
   let W, H, particles = [];
   const mouse = {x:-1000, y:-1000};
-  const isMobile = window.matchMedia('(max-width:640px)').matches;
+  const isMobile = window.matchMedia('(max-width:767px)').matches;
 
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
   resize();
   window.addEventListener('resize',()=>{resize();initParticles()});
   window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+
+  const GRID_SIZE = isMobile ? 48 : 64;
+  let gridOffset = 0;
+
+  function drawGrid(){
+    const cols = Math.ceil(W / GRID_SIZE) + 2;
+    const rows = Math.ceil(H / GRID_SIZE) + 2;
+    const ox = gridOffset % GRID_SIZE;
+    ctx.save();
+    for(let c = -1; c < cols; c++){
+      const x = c * GRID_SIZE - ox;
+      const bright = (Math.round((x + ox) / GRID_SIZE) % 4 === 0);
+      ctx.beginPath();ctx.moveTo(x, 0);ctx.lineTo(x, H);
+      ctx.strokeStyle = bright ? 'rgba(255,45,155,.08)' : 'rgba(139,42,255,.04)';
+      ctx.lineWidth = bright ? 1 : 0.5;ctx.stroke();
+    }
+    for(let r = -1; r < rows; r++){
+      const y = r * GRID_SIZE - ox;
+      const bright = (Math.round((y + ox) / GRID_SIZE) % 4 === 0);
+      ctx.beginPath();ctx.moveTo(0, y);ctx.lineTo(W, y);
+      ctx.strokeStyle = bright ? 'rgba(255,45,155,.08)' : 'rgba(139,42,255,.04)';
+      ctx.lineWidth = bright ? 1 : 0.5;ctx.stroke();
+    }
+    for(let c = -1; c < cols; c++){
+      for(let r = -1; r < rows; r++){
+        const x = c * GRID_SIZE - ox;
+        const y = r * GRID_SIZE - ox;
+        const baseAlpha = (Math.round((x+ox)/GRID_SIZE) % 4 === 0 && Math.round((y+ox)/GRID_SIZE) % 4 === 0) ? 0.2 : 0.08;
+        ctx.beginPath();ctx.arc(x, y, 1, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(139,42,255,${baseAlpha})`;ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
 
   const COLORS=[[255,45,155],[139,42,255],[192,100,255],[240,180,255],[255,255,255]];
 
@@ -473,11 +514,6 @@
       this.life++;this.wave+=.018;this.twinkle+=.038;
       this.x+=this.vx+Math.sin(this.wave)*.16;
       this.y+=this.vy;
-      if(!isMobile){
-        const dx=this.x-mouse.x,dy=this.y-mouse.y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<85){const f=(85-dist)/85;this.x+=(dx/dist)*f*1.1;this.y+=(dy/dist)*f*1.1}
-      }
       if(this.life>this.maxLife||this.y<-20)this.reset(false);
     }
     draw(){
@@ -496,43 +532,32 @@
 
   function drawLines(){
     if(isMobile)return;
-    const near=particles.filter(p=>{
-      const dx=p.x-mouse.x,dy=p.y-mouse.y;
-      return Math.sqrt(dx*dx+dy*dy)<140;
-    });
-    for(let i=0;i<near.length;i++){
-      for(let j=i+1;j<near.length;j++){
-        const dx=near[i].x-near[j].x,dy=near[i].y-near[j].y;
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
         const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<85){
-          ctx.beginPath();ctx.moveTo(near[i].x,near[i].y);ctx.lineTo(near[j].x,near[j].y);
-          ctx.strokeStyle=`rgba(255,45,155,${(1-d/85)*.22})`;ctx.lineWidth=.6;ctx.stroke();
+        if(d<120){
+          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(255,45,155,${(1-d/120)*.18})`;ctx.lineWidth=.5;ctx.stroke();
         }
       }
     }
   }
 
   function initParticles(){
-    const count=isMobile?60:Math.min(Math.floor((W*H)/7000),150);
+    const count=isMobile?50:Math.min(Math.floor((W*H)/9000),120);
     particles=Array.from({length:count},()=>new Particle(true));
   }
 
   function animate(){
     ctx.clearRect(0,0,W,H);
+    gridOffset += 0.3;
+    drawGrid();
     drawLines();
     particles.forEach(p=>{p.update();p.draw()});
     requestAnimationFrame(animate);
   }
   initParticles();animate();
-
-  // Hamburger menu
-  function toggleMenu() {
-    const menu = document.getElementById('mobile-menu');
-    const btn = document.getElementById('hamburger');
-    menu.classList.toggle('open');
-    btn.classList.toggle('open');
-    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
-  }
 </script>
 </body>
 </html>
