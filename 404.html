@@ -10,7 +10,8 @@
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow:hidden; display:flex; align-items:center; justify-content:center; cursor:default; }
     #cursor-glow {
-      will-change: transform; position:fixed; width:400px; height:400px; background:radial-gradient(circle, rgba(255,45,155,0.12) 0%, rgba(139,42,255,0.07) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+      will-change: transform;
+      transform: translate(-50%, -50%); position:fixed; width:400px; height:400px; background:radial-gradient(circle, rgba(255,45,155,0.12) 0%, rgba(139,42,255,0.07) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
     body::before { content:''; position:fixed; inset:0; background:linear-gradient(rgba(139,42,255,.04) 1px, transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
     body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 50%, rgba(255,45,155,.1) 0%, transparent 70%); pointer-events:none; z-index:0; }
     /* ── PARTICLES ── */
@@ -91,8 +92,8 @@
   /* ── Cursor Glow ── */
   const glow = document.getElementById('cursor-glow');
   document.addEventListener('mousemove', e => {
-    glow.style.left = (e.clientX - 150) + 'px';
-    glow.style.top  = (e.clientY - 150) + 'px';
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
   });
 
   /* ── Particle + Grid System ── */
