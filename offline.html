@@ -10,9 +10,9 @@
   ════════════════════════════════════════════════ */
   const MAINTENANCE = false;
   const SYSTEM_FAILURE = false;
-  const OFFLINE = true;           // ✏️ true = alle Seiten → offline
-  const OFFLINE_REASON = "Server Maintenance";       // ✏️ z.B. "Server maintenance"
-  const OFFLINE_UNTIL  = "Tmr 11:50 AM";       // ✏️ z.B. "Tmr 11:50 AM"
+  const OFFLINE = false;           // ✏️ true = alle Seiten → offline
+  const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
+  const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
   /* ════════════════════════════════════════════════ */
 
   const _isOfflinePage = window.location.href.includes('offline.html');
@@ -25,13 +25,13 @@
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     body { background:var(--bg); color:var(--white); font-family:'Rajdhani',sans-serif; min-height:100vh; overflow:hidden; display:flex; align-items:center; justify-content:center; cursor:default; }
 
-    #cursor-glow { position:fixed; width:400px; height:400px; background:radial-gradient(circle, rgba(255,45,155,0.1) 0%, rgba(139,42,255,0.06) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
+    #cursor-glow {
+      will-change: transform;
+      transform: translate(-50%, -50%); position:fixed; width:400px; height:400px; background:radial-gradient(circle, rgba(255,45,155,0.1) 0%, rgba(139,42,255,0.06) 40%, transparent 70%); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); }
     body::before { content:''; position:fixed; inset:0; background:linear-gradient(rgba(139,42,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px); background-size:60px 60px; pointer-events:none; z-index:0; }
     body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139,42,255,.12) 0%, transparent 70%); pointer-events:none; z-index:0; }
-
-    .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-    .particle  { position:absolute; border-radius:50%; animation:float-p linear infinite; opacity:0; }
-    @keyframes float-p { 0%{transform:translateY(100vh);opacity:0;}10%{opacity:.5;}90%{opacity:.3;}100%{transform:translateY(-10vh);opacity:0;} }
+    /* ── PARTICLES ── */
+    #particles { position:fixed; inset:0; z-index:0; pointer-events:none; }10%{opacity:.5;}90%{opacity:.3;}100%{transform:translateY(-10vh);opacity:0;} }
 
     .err-logo { position:fixed; top:24px; left:32px; font-family:'Orbitron'; font-size:.9rem; font-weight:900; letter-spacing:.18em; background:linear-gradient(135deg,var(--pink),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; z-index:10; text-decoration:none; }
     .err-time { position:fixed; top:24px; right:32px; font-family:'Orbitron'; font-size:.78rem; color:var(--pink); letter-spacing:.1em; border:1px solid rgba(255,45,155,.3); padding:6px 14px; border-radius:4px; background:rgba(255,45,155,.05); z-index:10; }
@@ -107,9 +107,9 @@
 <body>
 
 <div id="cursor-glow"></div>
-<div class="particles" id="particles"></div>
+<canvas id="particles"></canvas>
 
-<a href="index.html" class="err-logo">NOVA SYNDICATE</a>
+
 <div class="err-time" id="live-time">00:00:00</div>
 
 <div class="wrap">
@@ -135,20 +135,7 @@
 </div>
 
 <script>
-  // Fill in reason + until from config
-  const reasonEl = document.getElementById('offline-reason-text');
-  const untilEl  = document.getElementById('offline-until-text');
-
-  reasonEl.textContent = (typeof OFFLINE_REASON !== 'undefined' && OFFLINE_REASON.trim() !== '') ? OFFLINE_REASON : '—';
-  if (!OFFLINE_REASON || OFFLINE_REASON.trim() === '') reasonEl.classList.add('empty');
-
-  untilEl.textContent = (typeof OFFLINE_UNTIL !== 'undefined' && OFFLINE_UNTIL.trim() !== '') ? OFFLINE_UNTIL : '—';
-  if (!OFFLINE_UNTIL || OFFLINE_UNTIL.trim() === '') untilEl.classList.add('empty');
-
-  // Reload every 30s so when OFFLINE=false it auto-redirects
-  setInterval(() => { window.location.reload(); }, 30000);
-
-  // Live time
+  /* ── Live time ── */
   function updateTime() {
     const now = new Date();
     document.getElementById('live-time').textContent =
@@ -156,16 +143,132 @@
   }
   updateTime(); setInterval(updateTime, 1000);
 
-  // Cursor glow
-  const glow = document.getElementById('cursor-glow');
-  let mx=0,my=0,gx=0,gy=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  (function animGlow(){gx+=(mx-gx)*.08;gy+=(my-gy)*.08;glow.style.left=gx+'px';glow.style.top=gy+'px';requestAnimationFrame(animGlow);})();
+  // Hamburger menu
+  function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.getElementById('hamburger');
+    menu.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+  }
 
-  // Particles
-  const container=document.getElementById('particles');
-  const colors=['#ff2d9b','#8b2aff','#f0e8ff','#c84dff'];
-  for(let i=0;i<24;i++){const p=document.createElement('div');p.classList.add('particle');const size=Math.random()*3+1;const color=colors[Math.floor(Math.random()*colors.length)];p.style.cssText=`width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;animation-duration:${Math.random()*14+10}s;animation-delay:${Math.random()*15}s;box-shadow:0 0 ${size*3}px ${color};`;container.appendChild(p);}
+  /* ── Cursor Glow ── */
+  const glow = document.getElementById('cursor-glow');
+  document.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+
+  /* ── Particle + Grid System ── */
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const mouse = {x:-1000, y:-1000};
+  const isMobile = window.matchMedia('(max-width:767px)').matches;
+
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+  resize();
+  window.addEventListener('resize',()=>{resize();initParticles()});
+  window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+
+  const GRID_SIZE = isMobile ? 48 : 64;
+  let gridOffset = 0;
+
+  function drawGrid(){
+    const cols = Math.ceil(W / GRID_SIZE) + 2;
+    const rows = Math.ceil(H / GRID_SIZE) + 2;
+    const ox = gridOffset % GRID_SIZE;
+    ctx.save();
+    for(let c = -1; c < cols; c++){
+      const x = c * GRID_SIZE - ox;
+      const bright = (Math.round((x + ox) / GRID_SIZE) % 4 === 0);
+      ctx.beginPath();ctx.moveTo(x, 0);ctx.lineTo(x, H);
+      ctx.strokeStyle = bright ? 'rgba(255,45,155,.08)' : 'rgba(139,42,255,.04)';
+      ctx.lineWidth = bright ? 1 : 0.5;ctx.stroke();
+    }
+    for(let r = -1; r < rows; r++){
+      const y = r * GRID_SIZE - ox;
+      const bright = (Math.round((y + ox) / GRID_SIZE) % 4 === 0);
+      ctx.beginPath();ctx.moveTo(0, y);ctx.lineTo(W, y);
+      ctx.strokeStyle = bright ? 'rgba(255,45,155,.08)' : 'rgba(139,42,255,.04)';
+      ctx.lineWidth = bright ? 1 : 0.5;ctx.stroke();
+    }
+    for(let c = -1; c < cols; c++){
+      for(let r = -1; r < rows; r++){
+        const x = c * GRID_SIZE - ox;
+        const y = r * GRID_SIZE - ox;
+        const baseAlpha = (Math.round((x+ox)/GRID_SIZE) % 4 === 0 && Math.round((y+ox)/GRID_SIZE) % 4 === 0) ? 0.2 : 0.08;
+        ctx.beginPath();ctx.arc(x, y, 1, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(139,42,255,${baseAlpha})`;ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
+  const COLORS=[[255,45,155],[139,42,255],[192,100,255],[240,180,255],[255,255,255]];
+
+  class Particle{
+    constructor(init){this.reset(init)}
+    reset(randomY){
+      this.x=Math.random()*W;
+      this.y=randomY?Math.random()*H:H+10;
+      this.vx=(Math.random()-.5)*.3;
+      this.vy=-(Math.random()*.6+.35);
+      this.size=Math.random()*1.5+.3;
+      this.life=0;this.maxLife=Math.random()*300+400;
+      this.wave=Math.random()*Math.PI*2;
+      this.twinkle=Math.random()*Math.PI*2;
+      const c=COLORS[Math.floor(Math.random()*COLORS.length)];
+      this.r=c[0];this.g=c[1];this.b=c[2];
+    }
+    update(){
+      this.life++;this.wave+=.018;this.twinkle+=.038;
+      this.x+=this.vx+Math.sin(this.wave)*.16;
+      this.y+=this.vy;
+      if(this.life>this.maxLife||this.y<-20)this.reset(false);
+    }
+    draw(){
+      const p=this.life/this.maxLife;
+      const fade=p<.08?p/.08:p>.9?(1-p)/.1:1;
+      const alpha=fade*(0.65+0.35*Math.sin(this.twinkle));
+      const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*4);
+      g.addColorStop(0,`rgba(${this.r},${this.g},${this.b},${alpha*.55})`);
+      g.addColorStop(1,`rgba(${this.r},${this.g},${this.b},0)`);
+      ctx.beginPath();ctx.arc(this.x,this.y,this.size*4,0,Math.PI*2);
+      ctx.fillStyle=g;ctx.fill();
+      ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${this.r},${this.g},${this.b},${alpha})`;ctx.fill();
+    }
+  }
+
+  function drawLines(){
+    if(isMobile)return;
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(255,45,155,${(1-d/120)*.18})`;ctx.lineWidth=.5;ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function initParticles(){
+    const count=isMobile?50:Math.min(Math.floor((W*H)/9000),120);
+    particles=Array.from({length:count},()=>new Particle(true));
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    gridOffset += 0.3;
+    drawGrid();
+    drawLines();
+    particles.forEach(p=>{p.update();p.draw()});
+    requestAnimationFrame(animate);
+  }
+  initParticles();animate();
 </script>
 </body>
 </html>
