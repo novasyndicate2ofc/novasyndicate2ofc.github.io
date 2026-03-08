@@ -13,6 +13,7 @@
   const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
   const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
   const GLOBAL_ANNOUNCEMENT = "";
+  const RELEASE_MODE = true;      // ✏️ true = alle Besucher → release.html
   /* ════════════════════════════════════════════════ */
 
   // Maintenance
@@ -394,8 +395,7 @@
     @media(max-width:768px) {
       .nav-links { display:none; }
     }
-  </style>
-</head>
+  </style></head>
 <body>
 
 <!-- ─── CURSOR GLOW ─── -->
@@ -457,18 +457,25 @@
       <span class="team-badge badge-founder">Founder</span>
     </div>
     <div class="team-card tier-founder">
-      <div class="team-avatar av-founder"><img src="tristan.png" alt="Tristan" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','T')">T</div>
-      <div class="team-name">Tristan</div>
+      <div class="team-avatar av-founder"><img src="jme.png" alt="Jme" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','J')">J</div>
+      <div class="team-name">Jme</div>
       <div class="team-role">Founder</div>
-      <div class="team-bio">Founded Nova Syndicate and built the team from the ground up.</div>
+      <div class="team-bio">Founded Nova Syndicate and leads the community forward.</div>
       <span class="team-badge badge-founder">Founder</span>
     </div>
     <div class="team-card tier-cofound">
-      <div class="team-avatar av-cofound"><img src="jme.png" alt="Jme" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','J')">J</div>
-      <div class="team-name">Jme</div>
-      <div class="team-role">Founder</div>
-      <div class="team-bio">Helping shape the foundation of the Syndicate.</div>
-      <span class="team-badge badge-cofound">Founder</span>
+      <div class="team-avatar av-cofound"><img src="tristan.png" alt="Tristan" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','T')">T</div>
+      <div class="team-name">Tristan</div>
+      <div class="team-role">Co-Founder</div>
+      <div class="team-bio">Co-founded Nova Syndicate and helped build the team from the ground up.</div>
+      <span class="team-badge badge-cofound">Co-Founder</span>
+    </div>
+    <div class="team-card tier-cofound">
+      <div class="team-avatar av-cofound"><img src="batman.png" alt="Batman" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','B')">B</div>
+      <div class="team-name">Batman</div>
+      <div class="team-role">Co-Founder</div>
+      <div class="team-bio">Co-founded Nova Syndicate and keeps the community strong.</div>
+      <span class="team-badge badge-cofound">Co-Founder</span>
     </div>
   </div>
 
@@ -476,30 +483,18 @@
   <div class="team-section-label">⬡ Management</div>
   <div class="team-grid">
     <div class="team-card">
-      <div class="team-avatar av-mgmt"><img src="batman.png" alt="Batman" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','B')">B</div>
-      <div class="team-name">Batman</div>
+      <div class="team-avatar av-mgmt"><img src="kyle.png" alt="Kyle" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','K')">K</div>
+      <div class="team-name">Kyle</div>
       <div class="team-role">Discord Management</div>
       <div class="team-bio">Keeps the Discord server running smoothly.</div>
       <span class="team-badge">Management</span>
     </div>
     <div class="team-card">
-      <div class="team-avatar av-mgmt"><img src="kyle.png" alt="Kyle" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','K')">K</div>
-      <div class="team-name">Kyle</div>
-      <div class="team-role">Community Manager</div>
-      <div class="team-bio">Bridges the community and the team.</div>
-      <span class="team-badge">Management</span>
-    </div>
-  </div>
-
-  <!-- DESIGN -->
-  <div class="team-section-label">⬡ Design</div>
-  <div class="team-grid">
-    <div class="team-card">
-      <div class="team-avatar av-admin"><img src="max.png" alt="Max" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','M')">M</div>
+      <div class="team-avatar av-mgmt"><img src="max.png" alt="Max" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','M')">M</div>
       <div class="team-name">Max</div>
-      <div class="team-role">Website Designer</div>
-      <div class="team-bio">Responsible for the design and look of the Nova Syndicate website.</div>
-      <span class="team-badge badge-admin">Designer</span>
+      <div class="team-role">Community Manager / Website Designer</div>
+      <div class="team-bio">Bridges the community and designs the Nova Syndicate website.</div>
+      <span class="team-badge">Management</span>
     </div>
   </div>
 
@@ -510,15 +505,8 @@
       <div class="team-avatar av-admin"><img src="idk.png" alt="IDK" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','I')">I</div>
       <div class="team-name">IDK</div>
       <div class="team-role">Lead Administrator</div>
-      <div class="team-bio">Oversees all administrative operations.</div>
+      <div class="team-bio">Oversees all administrative operations within Nova Syndicate.</div>
       <span class="team-badge badge-admin">Lead Admin</span>
-    </div>
-    <div class="team-card">
-      <div class="team-avatar av-admin" style="opacity:.45;">—</div>
-      <div class="team-name" style="opacity:.5;">NON</div>
-      <div class="team-role">Administrator</div>
-      <div class="team-bio">This position is currently vacant.</div>
-      <span class="team-badge badge-admin">Admin</span>
     </div>
   </div>
 
