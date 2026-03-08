@@ -21,7 +21,7 @@ const CORRUPTED_ENABLED = false;
 /* RELEASE MODE
    true  = alle Besucher werden auf release.html weitergeleitet
    false = normale Website */
-const RELEASE_MODE = false;
+const RELEASE_MODE = true;
 
 /* THEME — gilt für alle Seiten gleichzeitig
    Options: "default" | "winter" | "sunset" | "christmas" | "halloween" | "newyear" | "valentine" */
