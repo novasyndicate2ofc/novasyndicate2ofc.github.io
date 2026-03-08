@@ -11,12 +11,17 @@ const MAINTENANCE = false;
 /* EXPLOIT PAGE
    true  = exploit.html ist erreichbar
    false = Weiterleitung zu 404 */
-const EXPLOIT_ENABLED = true;
+const EXPLOIT_ENABLED = false;
 
 /* CORRUPTED PAGE
    true  = corrupted.html ist erreichbar
    false = Weiterleitung zu 404 */
-const CORRUPTED_ENABLED = true;
+const CORRUPTED_ENABLED = false;
+
+/* RELEASE MODE
+   true  = alle Besucher werden auf release.html weitergeleitet
+   false = normale Website */
+const RELEASE_MODE = false;
 
 /* THEME — gilt für alle Seiten gleichzeitig
    Options: "default" | "winter" | "sunset" | "christmas" | "halloween" | "newyear" | "valentine" */
@@ -35,6 +40,12 @@ if (MAINTENANCE && !_isMaintPage) {
   window.location.replace('maintenance.html');
 } else if (!MAINTENANCE && _isMaintPage) {
   window.location.replace('index.html');
+}
+
+// Release Mode redirect
+const _isReleasePage = window.location.pathname.endsWith('release.html');
+if (RELEASE_MODE && !_isReleasePage && !_isMaintPage && !window.__skipReleaseRedirect) {
+  window.location.replace('release.html');
 }
 
 // Exploit & Corrupted page guards
