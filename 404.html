@@ -53,7 +53,33 @@
     .err-time { position:fixed; top:24px; right:32px; font-family:'Orbitron'; font-size:.78rem; color:var(--pink); letter-spacing:.1em; border:1px solid rgba(255,45,155,.3); padding:6px 14px; border-radius:4px; background:rgba(255,45,155,.05); z-index:10; }
 
     @media(max-width:480px){ .err-logo,.err-time{display:none;} }
-  </style>
+  </style>  <script>
+  /* ════════════════════════════════════════════════
+     ✏️  NOVA SYNDICATE — CONFIG
+  ════════════════════════════════════════════════ */
+  const MAINTENANCE = false;       // ✏️ true = Weiterleitung zu maintenance.html
+  const SYSTEM_FAILURE = false;    // ✏️ true = Weiterleitung zu 404.html
+  const OFFLINE = false;           // ✏️ true = alle Seiten → offline
+  const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
+  const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
+  const GLOBAL_ANNOUNCEMENT = "";
+  const RELEASE_MODE = true;      // ✏️ true = alle Besucher → release.html
+  /* ════════════════════════════════════════════════ */
+
+  const _path = window.location.pathname;
+  const _isMaintPage   = _path.endsWith('maintenance.html');
+  const _is404Page     = _path.endsWith('404.html');
+  const _isOfflinePage = _path.endsWith('offline.html');
+  const _isNormalPage  = !_isMaintPage && !_is404Page && !_isOfflinePage;
+
+  if (MAINTENANCE    && _isNormalPage)  { window.location.replace('maintenance.html'); }
+  if (!MAINTENANCE   && _isMaintPage && !window.location.search.includes('bypass=1'))   { window.location.replace('index.html'); }
+  if (SYSTEM_FAILURE && !_is404Page)    { window.location.replace('404.html'); }
+  if (!SYSTEM_FAILURE && _is404Page)    { window.location.replace('index.html'); }
+  if (OFFLINE        && !_isOfflinePage){ window.location.replace('offline.html'); }
+  if (!OFFLINE       && _isOfflinePage) { window.location.replace('index.html'); }
+  if (RELEASE_MODE   && !_isMaintPage && !window.location.pathname.endsWith('release.html')) { window.location.replace('release.html'); }
+</script>
 </head>
 <body>
 
