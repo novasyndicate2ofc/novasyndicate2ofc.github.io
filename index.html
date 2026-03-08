@@ -33,6 +33,7 @@
   // Greeting + Particles
 </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Nova Syndicate</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -675,9 +676,163 @@
     }
     .mobile-menu-close:hover { color:var(--white); }
 
-    @media(max-width:768px) {
-      .nav-links { display:none; }
-      .hamburger { display:flex; }
+    /* Hamburger always visible */
+    .hamburger { display:flex; }
+    .nav-links { display:none; }
+
+    /* ── ADMIN GHOST BUTTON ── */
+    #admin-trigger {
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .3s, border-color .3s, background .3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: transparent;
+      font-size: .9rem;
+      padding: 0;
+    }
+    #admin-trigger:hover {
+      opacity: 1;
+      border-color: rgba(255,45,155,.3);
+      background: rgba(255,45,155,.06);
+      color: rgba(255,45,155,.5);
+    }
+
+    /* ── ADMIN PANEL MODAL ── */
+    #admin-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(5,0,15,.92);
+      backdrop-filter: blur(18px);
+      align-items: center;
+      justify-content: center;
+      animation: fadein .2s ease;
+    }
+    #admin-overlay.open { display: flex; }
+    @keyframes fadein { from{opacity:0;} to{opacity:1;} }
+
+    .admin-box {
+      background: rgba(5,0,15,.98);
+      border: 1px solid rgba(255,45,155,.25);
+      border-radius: 10px;
+      padding: 36px 32px;
+      width: min(400px, 90vw);
+      text-align: center;
+      position: relative;
+      box-shadow: 0 0 60px rgba(255,45,155,.08);
+    }
+    .admin-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,45,155,.06), transparent 70%);
+      pointer-events: none;
+    }
+    .admin-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none; border: none;
+      color: var(--dim); font-size: 1.1rem;
+      cursor: pointer; transition: color .2s;
+    }
+    .admin-close:hover { color: var(--white); }
+    .admin-icon {
+      font-family: 'Orbitron';
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .admin-title {
+      font-family: 'Orbitron';
+      font-size: .9rem;
+      font-weight: 900;
+      letter-spacing: .25em;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .admin-sub {
+      font-size: .72rem;
+      letter-spacing: .15em;
+      color: var(--dim);
+      margin-bottom: 24px;
+    }
+    .admin-dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .admin-dot-ind {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,45,155,.2);
+      transition: background .15s, box-shadow .15s;
+    }
+    .admin-dot-ind.filled {
+      background: var(--pink);
+      box-shadow: 0 0 8px rgba(255,45,155,.5);
+      border-color: var(--pink);
+    }
+    .admin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .kp-btn {
+      background: rgba(139,42,255,.07);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 13px;
+      font-family: 'Orbitron';
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--white);
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .1s;
+      letter-spacing: .1em;
+    }
+    .kp-btn:hover {
+      background: rgba(255,45,155,.1);
+      border-color: rgba(255,45,155,.35);
+      transform: scale(1.04);
+    }
+    .kp-btn:active { transform: scale(.96); }
+    .kp-btn.del {
+      background: rgba(255,80,80,.06);
+      border-color: rgba(255,80,80,.18);
+      color: rgba(255,80,80,.7);
+      font-size: .75rem;
+      letter-spacing: .08em;
+    }
+    .kp-btn.del:hover { background: rgba(255,80,80,.12); border-color: rgba(255,80,80,.3); }
+    .admin-err {
+      font-size: .65rem;
+      letter-spacing: .2em;
+      color: rgba(255,60,60,.7);
+      height: 18px;
+      margin-top: 4px;
+      animation: shake .3s ease;
+    }
+    @keyframes shake {
+      0%,100%{transform:none;}
+      20%{transform:translateX(-5px);}
+      40%{transform:translateX(5px);}
+      60%{transform:translateX(-3px);}
+      80%{transform:translateX(3px);}
     }
     /* ── PARTICLES ── */
     #particles { position:fixed; inset:0; z-index:0; pointer-events:none; }
@@ -704,6 +859,42 @@
   <a href="status.html" >Status</a>
   <a href="information.html" >Information</a>
   <a href="announcements.html" >Announcements</a>
+  <a href="credits.html" >Credits</a>
+  <a href="partners.html" >Partners</a>
+  <a href="social.html" >Social</a>
+</div>
+
+<!-- ─── ADMIN PANEL MODAL ─── -->
+<div id="admin-overlay">
+  <div class="admin-box">
+    <button class="admin-close" onclick="closeAdmin()">✕</button>
+    <div class="admin-icon">⬡</div>
+    <div class="admin-title">ADMIN ACCESS</div>
+    <div class="admin-sub">Enter authorization code</div>
+    <div class="admin-dots" id="admin-dots">
+      <div class="admin-dot-ind"></div>
+      <div class="admin-dot-ind"></div>
+      <div class="admin-dot-ind"></div>
+      <div class="admin-dot-ind"></div>
+      <div class="admin-dot-ind"></div>
+      <div class="admin-dot-ind"></div>
+    </div>
+    <div class="admin-keypad">
+      <button class="kp-btn" onclick="kpPress('1')">1</button>
+      <button class="kp-btn" onclick="kpPress('2')">2</button>
+      <button class="kp-btn" onclick="kpPress('3')">3</button>
+      <button class="kp-btn" onclick="kpPress('4')">4</button>
+      <button class="kp-btn" onclick="kpPress('5')">5</button>
+      <button class="kp-btn" onclick="kpPress('6')">6</button>
+      <button class="kp-btn" onclick="kpPress('7')">7</button>
+      <button class="kp-btn" onclick="kpPress('8')">8</button>
+      <button class="kp-btn" onclick="kpPress('9')">9</button>
+      <button class="kp-btn del" onclick="kpDel()">DEL</button>
+      <button class="kp-btn" onclick="kpPress('0')">0</button>
+      <button class="kp-btn" onclick="kpEnter()" style="background:rgba(255,45,155,.1);border-color:rgba(255,45,155,.3);color:var(--pink);font-size:.7rem;letter-spacing:.1em;">ENTER</button>
+    </div>
+    <div class="admin-err" id="admin-err"></div>
+  </div>
 </div>
 
 <!-- ─── PARTICLES ─── -->
@@ -724,7 +915,10 @@
 <button class="hamburger" id="hamburger" onclick="toggleMenu()">
   <span></span><span></span><span></span>
 </button>
-  <div class="nav-time" id="live-time">00:00:00</div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="nav-time" id="live-time">00:00:00</div>
+    <button id="admin-trigger" onclick="openAdmin()" title="">⚙</button>
+  </div>
 </nav>
 
 <!-- ─── ANNOUNCEMENT ─── -->
@@ -746,25 +940,12 @@
   <div class="hero-cta">
     <a href="https://discord.gg/SkHmpbVYzw" target="_blank" class="btn btn-primary">Join Discord</a>
     <a href="team.html" class="btn btn-outline">Our Team</a>
+
   </div>
 </div>
 
 <!-- ─── COLLABORATORS ─── -->
-<div id="collaborators">
-  <div class="collab-title">COLLABORATORS</div>
-  <div class="collab-grid">
-    <div class="collab-card">
-      <div class="collab-card-top"></div>
-      <div class="collab-partner-badge">✦ PARTNERS</div>
-      <div class="collab-avatar">
-        <img src="max.png" alt="Max" onerror="this.style.display='none'">M
-      </div>
-      <div class="collab-name">Max</div>
-      <div class="collab-role">Collaborator</div>
-      <span class="collab-btn">Visit Website</span>
-    </div>
-  </div>
-</div>
+
 </div>
 
 <!-- ─── STATUS BAR ─── -->
@@ -777,7 +958,7 @@
   <div class="status-item">
     <span class="status-dot yellow"></span>
     <span>Team</span>
-    <span class="status-label">10 Members</span>
+    <span class="status-label">8 Members</span>
   </div>
   <div class="status-item">
     <span class="status-dot"></span>
@@ -929,6 +1110,75 @@
     requestAnimationFrame(animate);
   }
   initParticles();animate();
+
+
+
+  /* ── Admin Panel ── */
+  // UI state
+  let _kpBuf = '';
+  const _kpLen = 6;
+
+  // Code is stored obfuscated — XOR each value with 42 to get digit char codes
+  function _resolveKey() {
+    const _raw = [30,18,24,19,27,28];
+    const _salt = 42;
+    return _raw.map(v => String.fromCharCode(v ^ _salt)).join('');
+  }
+
+  function openAdmin() {
+    _kpBuf = '';
+    _updateDots();
+    document.getElementById('admin-err').textContent = '';
+    document.getElementById('admin-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeAdmin() {
+    document.getElementById('admin-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    _kpBuf = '';
+    _updateDots();
+  }
+  function _updateDots() {
+    document.querySelectorAll('.admin-dot-ind').forEach((d,i) => {
+      d.classList.toggle('filled', i < _kpBuf.length);
+    });
+  }
+  function kpPress(n) {
+    if (_kpBuf.length >= _kpLen) return;
+    _kpBuf += n;
+    _updateDots();
+    document.getElementById('admin-err').textContent = '';
+    if (_kpBuf.length === _kpLen) setTimeout(kpEnter, 120);
+  }
+  function kpDel() {
+    _kpBuf = _kpBuf.slice(0, -1);
+    _updateDots();
+    document.getElementById('admin-err').textContent = '';
+  }
+  function kpEnter() {
+    if (_kpBuf === _resolveKey()) {
+      closeAdmin();
+      window.location.href = 'dashboard.html';
+    } else {
+      const errEl = document.getElementById('admin-err');
+      errEl.textContent = 'ACCESS DENIED — INVALID CODE';
+      errEl.style.animation = 'none';
+      void errEl.offsetWidth;
+      errEl.style.animation = 'shake .3s ease';
+      _kpBuf = '';
+      _updateDots();
+    }
+  }
+
+  // Keyboard support
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('admin-overlay').classList.contains('open')) return;
+    if (e.key >= '0' && e.key <= '9') kpPress(e.key);
+    else if (e.key === 'Backspace') kpDel();
+    else if (e.key === 'Enter') kpEnter();
+    else if (e.key === 'Escape') closeAdmin();
+  });
+
 </script>
 </body>
 </html>
