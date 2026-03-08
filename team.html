@@ -316,8 +316,9 @@
     }
 
     /* ── HAMBURGER MENU ── */
+    .nav-links { display:none !important; }
     .hamburger {
-      display: none;
+      display: flex;
       flex-direction: column;
       gap: 5px;
       cursor: pointer;
@@ -392,7 +393,6 @@
 
     @media(max-width:768px) {
       .nav-links { display:none; }
-      .hamburger { display:flex; }
     }
   </style>
 </head>
@@ -410,6 +410,9 @@
   <a href="status.html" >Status</a>
   <a href="information.html" >Information</a>
   <a href="announcements.html" >Announcements</a>
+  <a href="credits.html" >Credits</a>
+  <a href="partners.html" >Partners</a>
+  <a href="social.html" >Social</a>
 </div>
 
 <!-- ─── PARTICLES ─── -->
@@ -457,22 +460,22 @@
       <div class="team-avatar av-founder"><img src="tazz.png" alt="Tazz" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','T')">T</div>
       <div class="team-name">Tazz</div>
       <div class="team-role">Founder</div>
-      <div class="team-bio">Visionary and founder of Nova Syndicate.</div>
+      <div class="team-bio">Founded Nova Syndicate and shaped its vision and community.</div>
       <span class="team-badge badge-founder">Founder</span>
     </div>
     <div class="team-card tier-founder">
       <div class="team-avatar av-founder"><img src="tristan.png" alt="Tristan" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','T')">T</div>
       <div class="team-name">Tristan</div>
       <div class="team-role">Founder</div>
-      <div class="team-bio">Visionary and founder of Nova Syndicate.</div>
+      <div class="team-bio">Founded Nova Syndicate and built the team from the ground up.</div>
       <span class="team-badge badge-founder">Founder</span>
     </div>
     <div class="team-card tier-cofound">
       <div class="team-avatar av-cofound"><img src="jme.png" alt="Jme" onerror="this.style.display='none';this.parentElement.setAttribute('data-letter','J')">J</div>
       <div class="team-name">Jme</div>
-      <div class="team-role">Co-Founder</div>
+      <div class="team-role">Founder</div>
       <div class="team-bio">Helping shape the foundation of the Syndicate.</div>
-      <span class="team-badge badge-cofound">Co-Founder</span>
+      <span class="team-badge badge-cofound">Founder</span>
     </div>
   </div>
 
@@ -556,7 +559,7 @@
   <div class="status-item">
     <span class="status-dot yellow"></span>
     <span>Team</span>
-    <span class="status-label">10 Members</span>
+    <span class="status-label">8 Members</span>
   </div>
   <div class="status-item">
     <span class="status-dot"></span>
