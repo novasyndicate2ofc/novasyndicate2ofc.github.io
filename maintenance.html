@@ -25,7 +25,7 @@
   const _isNormalPage  = !_isMaintPage && !_is404Page && !_isOfflinePage;
 
   if (MAINTENANCE    && _isNormalPage)  { window.location.replace('maintenance.html'); }
-  if (!MAINTENANCE   && _isMaintPage)   { window.location.replace('index.html'); }
+  if (!MAINTENANCE   && _isMaintPage && !window.location.search.includes('bypass=1'))   { window.location.replace('index.html'); }
   if (SYSTEM_FAILURE && !_is404Page)    { window.location.replace('404.html'); }
   if (!SYSTEM_FAILURE && _is404Page)    { window.location.replace('index.html'); }
   if (OFFLINE        && !_isOfflinePage){ window.location.replace('offline.html'); }
@@ -383,6 +383,7 @@
   <a href="status.html" >Status</a>
   <a href="information.html" >Information</a>
   <a href="announcements.html" >Announcements</a>
+  <a href="events.html" >Events</a>
   <a href="credits.html" >Credits</a>
   <a href="partners.html" >Partners</a>
   <a href="social.html" >Social</a>
