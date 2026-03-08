@@ -103,7 +103,33 @@
       .events-grid{grid-template-columns:1fr;}
       nav{padding:0 20px;}
     }
-  </style>
+  </style>  <script>
+  /* ════════════════════════════════════════════════
+     ✏️  NOVA SYNDICATE — CONFIG
+  ════════════════════════════════════════════════ */
+  const MAINTENANCE = false;       // ✏️ true = Weiterleitung zu maintenance.html
+  const SYSTEM_FAILURE = false;    // ✏️ true = Weiterleitung zu 404.html
+  const OFFLINE = false;           // ✏️ true = alle Seiten → offline
+  const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
+  const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
+  const GLOBAL_ANNOUNCEMENT = "";
+  const RELEASE_MODE = true;      // ✏️ true = alle Besucher → release.html
+  /* ════════════════════════════════════════════════ */
+
+  const _path = window.location.pathname;
+  const _isMaintPage   = _path.endsWith('maintenance.html');
+  const _is404Page     = _path.endsWith('404.html');
+  const _isOfflinePage = _path.endsWith('offline.html');
+  const _isNormalPage  = !_isMaintPage && !_is404Page && !_isOfflinePage;
+
+  if (MAINTENANCE    && _isNormalPage)  { window.location.replace('maintenance.html'); }
+  if (!MAINTENANCE   && _isMaintPage && !window.location.search.includes('bypass=1'))   { window.location.replace('index.html'); }
+  if (SYSTEM_FAILURE && !_is404Page)    { window.location.replace('404.html'); }
+  if (!SYSTEM_FAILURE && _is404Page)    { window.location.replace('index.html'); }
+  if (OFFLINE        && !_isOfflinePage){ window.location.replace('offline.html'); }
+  if (!OFFLINE       && _isOfflinePage) { window.location.replace('index.html'); }
+  if (RELEASE_MODE   && !_isMaintPage && !window.location.pathname.endsWith('release.html')) { window.location.replace('release.html'); }
+</script>
 </head>
 <body>
 <div id="cursor-glow"></div>
@@ -162,20 +188,42 @@
   /* ── MENU ── */
   function toggleMenu(){ const m=document.getElementById('mobile-menu'); const b=document.getElementById('hamburger'); m.classList.toggle('open'); b.classList.toggle('open'); document.body.style.overflow=m.classList.contains('open')?'hidden':''; }
 
-  /* ══════════════════════════════════════
-     EVENTS DATA — hier Events eintragen!
-     date format: 'YYYY-MM-DDTHH:MM:SS'
-  ══════════════════════════════════════ */
+  // ╔══════════════════════════════════════════════════════╗
+  // ║              📅  EVENTS  —  EDIT HERE               ║
+  // ╠══════════════════════════════════════════════════════╣
+  // ║  To add a new event, copy the template below and    ║
+  // ║  paste it inside the EVENTS array.                  ║
+  // ║                                                      ║
+  // ║  TEMPLATE:                                           ║
+  // ║  {                                                   ║
+  // ║    title: 'Event Name',                              ║
+  // ║    desc:  'Short description.',                      ║
+  // ║    date:  'YYYY-MM-DDTHH:MM:SS',                    ║
+  // ║    categories: ['gaming'],  ← pick from:            ║
+  // ║       gaming | stream | community |                  ║
+  // ║       tournament | fortnite | contest                ║
+  // ║    location: 'Discord',                              ║
+  // ║    host:  'Username',   ← optional, delete if none  ║
+  // ║    prize: 'Custom Role',← optional, delete if none  ║
+  // ║  },                                                  ║
+  // ║                                                      ║
+  // ║  Future date  → shows as UPCOMING + countdown       ║
+  // ║  Past date    → shows as PAST EVENT                 ║
+  // ╚══════════════════════════════════════════════════════╝
   const EVENTS = [
+
     {
       title: 'Fortnite Skin Contest',
       desc: 'Show off your best Fortnite skin and compete for a Custom Role prize.',
-      date: '2026-03-08T14:00:00',
+      date: '2026-02-15T18:00:00',
       categories: ['fortnite', 'contest'],
       location: 'Fortnite',
       host: 'Flightsimplayer',
       prize: 'Custom Role',
     },
+
+    // ── ADD NEW EVENTS ABOVE THIS LINE ──
+
   ];
 
   const CAT_LABELS = { gaming:'Gaming', stream:'Stream', community:'Community', tournament:'Tournament', fortnite:'Fortnite', contest:'Contest' };
