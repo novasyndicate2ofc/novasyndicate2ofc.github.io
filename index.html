@@ -14,6 +14,7 @@
   const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
   const GLOBAL_ANNOUNCEMENT = "";
   const RELEASE_MODE = true;      // ✏️ true = alle Besucher → release.html
+  if (RELEASE_MODE && !window.location.pathname.endsWith('release.html')) { window.location.replace('release.html'); }
   /* ════════════════════════════════════════════════ */
 
   // Maintenance
@@ -860,6 +861,7 @@
   <a href="information.html" >Information</a>
   <a href="announcements.html" >Announcements</a>
   <a href="events.html" >Events</a>
+  <a href="update.html" >Update</a>
   <a href="credits.html" >Credits</a>
   <a href="partners.html" >Partners</a>
   <a href="social.html" >Social</a>
