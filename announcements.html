@@ -241,8 +241,9 @@
     }
 
     /* ── HAMBURGER MENU ── */
+    .nav-links { display:none !important; }
     .hamburger {
-      display: none;
+      display: flex;
       flex-direction: column;
       gap: 5px;
       cursor: pointer;
@@ -317,7 +318,6 @@
 
     @media(max-width:768px) {
       .nav-links { display:none; }
-      .hamburger { display:flex; }
     }
   </style>
 </head>
@@ -334,6 +334,9 @@
   <a href="status.html" >Status</a>
   <a href="information.html" >Information</a>
   <a href="announcements.html" class="active">Announcements</a>
+  <a href="credits.html">Credits</a>
+  <a href="partners.html">Partners</a>
+  <a href="social.html">Social</a>
 </div>
 <canvas id="particles"></canvas>
 
@@ -381,7 +384,7 @@
   <div class="status-item">
     <span class="status-dot yellow"></span>
     <span>Team</span>
-    <span class="status-label">10 Members</span>
+    <span class="status-label">8 Members</span>
   </div>
   <div class="status-item">
     <span class="status-dot"></span>
@@ -403,23 +406,11 @@
       text: "Website is going in Maintenance at 8 PM untill Tmr 11:50 AM.",
       date: "05.03.2026"
     },
-    {
-      type: "soon",
-      title: "Social Page",
-      text: "The Social Page is coming soon",
-      date: "06.03.2026"
-    },
-    {
-      type: "soon",
-      title: "Roster Page",
-      text: "The Roster Page is coming out soon",
-      date: "06.03.2026"
-    },
-    {
-      type: "updated",
-      title: "Team Page",
-      text: "The Team Page is now Updated",
-      date: "06.03.2026"
+     {
+      type: "new",
+      title: "New Pages",
+      text: "Social, Credits, Partners and Dashboard",
+      date: "08.03.2026"
     },
   ];
   /* ════════════════════════════════════════════════ */
