@@ -20,7 +20,7 @@ const CORRUPTED_ENABLED = true;
 
 /* THEME — gilt für alle Seiten gleichzeitig
    Options: "default" | "winter" | "sunset" | "christmas" | "halloween" | "newyear" | "valentine" */
-const GLOBAL_THEME = "halloween";
+const GLOBAL_THEME = "default";
 
 /* ANNOUNCEMENT — erscheint auf allen Seiten
    Set to "" um es zu verstecken */
