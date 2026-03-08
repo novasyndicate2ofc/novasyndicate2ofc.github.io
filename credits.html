@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Credits</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--pink:#ff2d9b;--purple:#8b2aff;--white:#f0e8ff;--dim:rgba(240,232,255,0.5);--bg:#05000f;--card:rgba(139,42,255,0.07);--border:rgba(139,42,255,0.25);}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--white);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;cursor:default;}
+    #cursor-glow{will-change:transform;transform:translate(-50%,-50%);position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(255,45,155,0.12) 0%,rgba(139,42,255,0.07) 40%,transparent 70%);border-radius:50%;pointer-events:none;z-index:9998;}
+    canvas#particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;background:linear-gradient(rgba(139,42,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;}
+    body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,45,155,.08) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(5,0,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:'Orbitron';font-size:.85rem;font-weight:700;letter-spacing:.25em;background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .nav-links{display:flex;gap:32px;list-style:none;}
+    .nav-links a{font-size:.75rem;letter-spacing:.18em;color:var(--dim);text-decoration:none;text-transform:uppercase;transition:color .2s;position:relative;padding-bottom:4px;}
+    .nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--pink);transform:scaleX(0);transition:transform .3s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--white);}
+    .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1);}
+    .nav-time{font-family:'Orbitron';font-size:.7rem;color:var(--dim);letter-spacing:.1em;}
+
+    /* ── MAIN ── */
+    main{position:relative;z-index:1;padding:120px 40px 80px;max-width:960px;margin:0 auto;}
+
+    /* ── HERO ── */
+    .hero{text-align:center;margin-bottom:72px;}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,45,155,.08);border:1px solid rgba(255,45,155,.25);border-radius:20px;padding:5px 16px;margin-bottom:24px;font-size:.7rem;letter-spacing:.3em;color:var(--pink);text-transform:uppercase;}
+    .hero-title{font-family:'Orbitron';font-size:clamp(2rem,6vw,3.5rem);font-weight:900;letter-spacing:.08em;background:linear-gradient(135deg,var(--white) 0%,var(--pink) 50%,var(--purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(255,45,155,.25));margin-bottom:14px;}
+    .hero-sub{font-size:1.05rem;color:var(--dim);letter-spacing:.08em;font-weight:300;}
+
+    /* ── SECTION LABEL ── */
+    .section-label{display:flex;align-items:center;gap:16px;margin-bottom:28px;}
+    .section-label h2{font-family:'Orbitron';font-size:.75rem;font-weight:700;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;}
+    .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+    /* ── FOUNDER ROW ── */
+    .founder-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;display:flex;align-items:center;gap:32px;margin-bottom:48px;position:relative;overflow:hidden;}
+    .founder-card::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,45,155,.12),transparent 70%);pointer-events:none;}
+    .founder-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:1.4rem;font-weight:900;color:var(--white);flex-shrink:0;box-shadow:0 0 24px rgba(255,45,155,.3);}
+    .founder-info{flex:1;}
+    .founder-name{font-family:'Orbitron';font-size:1.2rem;font-weight:700;letter-spacing:.1em;color:var(--white);margin-bottom:4px;}
+    .founder-role{font-size:.75rem;letter-spacing:.3em;color:var(--pink);text-transform:uppercase;margin-bottom:10px;}
+    .founder-desc{font-size:.95rem;color:var(--dim);line-height:1.6;font-weight:300;}
+    .founder-tags{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+    .tag{font-size:.6rem;letter-spacing:.2em;padding:3px 10px;border-radius:12px;text-transform:uppercase;}
+    .tag.pink{background:rgba(255,45,155,.12);border:1px solid rgba(255,45,155,.25);color:var(--pink);}
+    .tag.purple{background:rgba(139,42,255,.12);border:1px solid rgba(139,42,255,.25);color:#c084fc;}
+    .tag.white{background:rgba(240,232,255,.06);border:1px solid rgba(240,232,255,.15);color:var(--dim);}
+
+    /* ── CREDITS GRID ── */
+    .credits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:56px;}
+    .credit-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px 22px;display:flex;align-items:center;gap:16px;transition:border-color .3s,transform .3s;cursor:default;}
+    .credit-card:hover{border-color:rgba(255,45,155,.35);transform:translateY(-2px);}
+    .cc-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:.85rem;font-weight:700;color:var(--white);flex-shrink:0;}
+    .cc-info{}
+    .cc-name{font-family:'Orbitron';font-size:.8rem;font-weight:700;letter-spacing:.1em;color:var(--white);margin-bottom:3px;}
+    .cc-role{font-size:.68rem;letter-spacing:.18em;color:var(--pink);text-transform:uppercase;margin-bottom:6px;}
+    .cc-contrib{font-size:.78rem;color:var(--dim);line-height:1.4;font-weight:300;}
+
+    /* ── TECH CREDITS ── */
+    .tech-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:56px;}
+    .tech-card{background:rgba(139,42,255,.04);border:1px solid rgba(139,42,255,.15);border-radius:8px;padding:14px 18px;transition:border-color .2s;}
+    .tech-card:hover{border-color:rgba(139,42,255,.3);}
+    .tech-name{font-family:'Orbitron';font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--white);margin-bottom:4px;}
+    .tech-desc{font-size:.7rem;color:var(--dim);line-height:1.4;}
+
+    /* ── QUOTE ── */
+    .quote-block{text-align:center;padding:48px 32px;background:var(--card);border:1px solid var(--border);border-radius:12px;position:relative;overflow:hidden;}
+    .quote-block::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 100%,rgba(139,42,255,.08),transparent 70%);pointer-events:none;}
+    .quote-mark{font-family:'Orbitron';font-size:4rem;color:rgba(255,45,155,.15);line-height:.8;margin-bottom:16px;}
+    .quote-text{font-size:1.1rem;color:var(--dim);font-style:italic;font-weight:300;letter-spacing:.04em;line-height:1.7;max-width:500px;margin:0 auto 16px;}
+    .quote-author{font-size:.7rem;letter-spacing:.3em;color:var(--pink);text-transform:uppercase;}
+
+    @media(max-width:680px){
+      main{padding:100px 20px 60px;}
+      .founder-card{flex-direction:column;text-align:center;}
+      .founder-tags{justify-content:center;}
+      nav{padding:0 20px;}
+      .nav-links{gap:16px;}
+      .nav-links a{font-size:.65rem;}
+    }
+
+    .hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;z-index:1100;}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .mobile-menu{display:none;position:fixed;inset:0;z-index:1050;background:rgba(5,0,15,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-family:'Orbitron';font-size:1.1rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:12px 28px;border-radius:6px;border:1px solid transparent;transition:all .2s;}
+    .mobile-menu a:hover,.mobile-menu a.active{color:var(--white);border-color:var(--border);background:var(--card);}
+    .mobile-menu a.active{background:linear-gradient(135deg,rgba(255,45,155,.1),rgba(139,42,255,.1));border-color:rgba(255,45,155,.5);color:var(--pink);}
+    .mobile-menu-logo{font-family:'Orbitron';font-size:.85rem;font-weight:900;letter-spacing:.3em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:32px;}
+    .mobile-menu-close{position:absolute;top:24px;right:24px;background:none;border:none;color:var(--dim);font-size:1.5rem;cursor:pointer;transition:color .2s;}
+    .mobile-menu-close:hover{color:var(--white);}
+  </style>
+</head>
+<body>
+<div id="cursor-glow"></div>
+<!-- ── MOBILE MENU ── -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
+  <div class="mobile-menu-logo">NOVA SYNDICATE</div>
+  <a href="index.html">Home</a>
+  <a href="team.html">Team</a>
+  <a href="status.html">Status</a>
+  <a href="information.html">Information</a>
+  <a href="announcements.html">Announcements</a>
+  <a href="credits.html" class="active">Credits</a>
+  <a href="partners.html">Partners</a>
+  <a href="social.html">Social</a>
+</div>
+
+<canvas id="particles"></canvas>
+
+<nav>
+  <div class="nav-logo">NOVA SYNDICATE</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="status.html">Status</a></li>
+    <li><a href="information.html">Information</a></li>
+    <li><a href="announcements.html">Announcements</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+  <div class="nav-time" id="live-time">00:00:00</div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-badge">✦ The People Behind It</div>
+    <div class="hero-title">CREDITS</div>
+    <div class="hero-sub">Everyone who built, shaped, and grew Nova Syndicate.</div>
+  </div>
+
+  <!-- FOUNDER -->
+  <div class="section-label"><h2>Founders</h2></div>
+  <div class="founder-card">
+    <div class="founder-avatar">T</div>
+    <div class="founder-info">
+      <div class="founder-name">Tazz</div>
+      <div class="founder-role">Founder</div>
+      <div class="founder-desc">Founded Nova Syndicate and shaped its vision, community, and identity from day one.</div>
+      <div class="founder-tags">
+        <span class="tag pink">Founder</span>
+        <span class="tag white">Community</span>
+        <span class="tag white">Vision</span>
+      </div>
+    </div>
+  </div>
+  <div class="founder-card">
+    <div class="founder-avatar">T</div>
+    <div class="founder-info">
+      <div class="founder-name">Tristan</div>
+      <div class="founder-role">Founder</div>
+      <div class="founder-desc">Founded Nova Syndicate and has been instrumental in building the team and growing the network.</div>
+      <div class="founder-tags">
+        <span class="tag pink">Founder</span>
+        <span class="tag white">Community</span>
+        <span class="tag white">Growth</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAM CONTRIBUTORS -->
+  <div class="section-label"><h2>Team</h2></div>
+  <div class="credits-grid">
+    <div class="credit-card">
+      <div class="cc-avatar">F</div>
+      <div class="cc-info">
+        <div class="cc-name">Flightsimplayer</div>
+        <div class="cc-role">Head Moderator</div>
+        <div class="cc-contrib">Community management, moderation strategy, and keeping the server running smoothly day-to-day.</div>
+      </div>
+    </div>
+    <div class="credit-card">
+      <div class="cc-avatar">M</div>
+      <div class="cc-info">
+        <div class="cc-name">Max</div>
+        <div class="cc-role">Partner & Collaborator</div>
+        <div class="cc-contrib">Key partner in growing the Nova Syndicate community and external relations.</div>
+      </div>
+    </div>
+    <div class="credit-card">
+      <div class="cc-avatar">?</div>
+      <div class="cc-info">
+        <div class="cc-name">Open Position</div>
+        <div class="cc-role">Administrator</div>
+        <div class="cc-contrib">This role is currently vacant. Interested? Reach out to the team.</div>
+      </div>
+    </div>
+    <div class="credit-card">
+      <div class="cc-avatar">?</div>
+      <div class="cc-info">
+        <div class="cc-name">Open Position</div>
+        <div class="cc-role">Moderator</div>
+        <div class="cc-contrib">We're looking for dedicated moderators to join the team.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="section-label"><h2>Built With</h2></div>
+  <div class="tech-grid">
+    <div class="tech-card"><div class="tech-name">HTML / CSS</div><div class="tech-desc">Core structure and styling of the entire website.</div></div>
+    <div class="tech-card"><div class="tech-name">JavaScript</div><div class="tech-desc">Animations, particles, live data, and interactivity.</div></div>
+    <div class="tech-card"><div class="tech-name">Canvas API</div><div class="tech-desc">Particle system and visual effects rendered in real-time.</div></div>
+    <div class="tech-card"><div class="tech-name">Orbitron</div><div class="tech-desc">Display typeface used across headings and UI labels.</div></div>
+    <div class="tech-card"><div class="tech-name">Rajdhani</div><div class="tech-desc">Body typeface for readable, elegant prose text.</div></div>
+    <div class="tech-card"><div class="tech-name">Google Fonts</div><div class="tech-desc">Font delivery for consistent cross-platform rendering.</div></div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-block">
+    <div class="quote-mark">"</div>
+    <div class="quote-text">Nova Syndicate isn't just a server. It's a place built by people who actually care about what they're creating.</div>
+    <div class="quote-author">— Tazz & Tristan, Founders</div>
+  </div>
+</main>
+
+<script>
+  const glow=document.getElementById('cursor-glow');
+  document.addEventListener('mousemove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';});
+  function tick(){const n=new Date();document.getElementById('live-time').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');}
+  tick();setInterval(tick,1000);
+
+  // Particles
+  const canvas=document.getElementById('particles');const ctx=canvas.getContext('2d');let W,H,particles=[];
+  const isMobile=window.matchMedia('(max-width:767px)').matches;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();
+  window.addEventListener('resize',()=>{resize();initP();});
+  const COLORS=[[255,45,155],[139,42,255],[192,100,255],[255,255,255]];
+  class P{constructor(r){this.reset(r)}reset(r){this.x=Math.random()*W;this.y=r?Math.random()*H:H+10;this.vx=(Math.random()-.5)*.3;this.vy=-(Math.random()*.5+.2);this.size=Math.random()*1.2+.3;this.life=0;this.maxLife=Math.random()*300+300;this.wave=Math.random()*Math.PI*2;this.twinkle=Math.random()*Math.PI*2;const c=COLORS[Math.floor(Math.random()*COLORS.length)];this.r=c[0];this.g=c[1];this.b=c[2];}update(){this.life++;this.wave+=.018;this.twinkle+=.038;this.x+=this.vx+Math.sin(this.wave)*.12;this.y+=this.vy;if(this.life>this.maxLife||this.y<-20)this.reset(false);}draw(){const p=this.life/this.maxLife;const fade=p<.08?p/.08:p>.9?(1-p)/.1:1;const alpha=fade*(0.6+0.4*Math.sin(this.twinkle));const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*4);g.addColorStop(0,`rgba(${this.r},${this.g},${this.b},${alpha*.5})`);g.addColorStop(1,`rgba(${this.r},${this.g},${this.b},0)`);ctx.beginPath();ctx.arc(this.x,this.y,this.size*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(${this.r},${this.g},${this.b},${alpha})`;ctx.fill();}}
+  function initP(){particles=Array.from({length:isMobile?50:100},()=>new P(true));}
+  function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+  initP();animate();
+
+  // Scroll reveal
+  const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:.1});
+  document.querySelectorAll('.credit-card,.tech-card,.founder-card,.quote-block').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity .6s ease, transform .6s ease';observer.observe(el);});
+
+  function toggleMenu(){
+    const m=document.getElementById('mobile-menu');
+    const b=document.getElementById('hamburger');
+    m.classList.toggle('open');
+    b.classList.toggle('open');
+    document.body.style.overflow=m.classList.contains('open')?'hidden':'';
+  }
+</script>
+</body>
+</html>
