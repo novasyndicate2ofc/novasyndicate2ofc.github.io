@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Social</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--pink:#ff2d9b;--purple:#8b2aff;--white:#f0e8ff;--dim:rgba(240,232,255,0.5);--bg:#05000f;--card:rgba(139,42,255,0.07);--border:rgba(139,42,255,0.25);}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--white);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;cursor:default;display:flex;flex-direction:column;}
+    #cursor-glow{will-change:transform;transform:translate(-50%,-50%);position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(255,45,155,0.12) 0%,rgba(139,42,255,0.07) 40%,transparent 70%);border-radius:50%;pointer-events:none;z-index:9998;}
+    canvas#particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;background:linear-gradient(rgba(139,42,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;}
+    body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 30%,rgba(255,45,155,.09) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(5,0,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:'Orbitron';font-size:.85rem;font-weight:700;letter-spacing:.25em;background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .nav-time{font-family:'Orbitron';font-size:.7rem;color:var(--dim);letter-spacing:.1em;}
+    .hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .mobile-menu{display:none;position:fixed;inset:0;z-index:1050;background:rgba(5,0,15,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-family:'Orbitron';font-size:1.1rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:12px 28px;border-radius:6px;border:1px solid transparent;transition:all .2s;}
+    .mobile-menu a:hover,.mobile-menu a.active{color:var(--white);border-color:var(--border);background:var(--card);}
+    .mobile-menu a.active{background:linear-gradient(135deg,rgba(255,45,155,.1),rgba(139,42,255,.1));border-color:rgba(255,45,155,.5);color:var(--pink);}
+    .mobile-menu-logo{font-family:'Orbitron';font-size:.85rem;font-weight:900;letter-spacing:.3em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:32px;}
+    .mobile-menu-close{position:absolute;top:24px;right:24px;background:none;border:none;color:var(--dim);font-size:1.5rem;cursor:pointer;transition:color .2s;}
+    .mobile-menu-close:hover{color:var(--white);}
+
+    /* ── MAIN ── */
+    main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;}
+
+    .hero{text-align:center;margin-bottom:56px;}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,45,155,.08);border:1px solid rgba(255,45,155,.22);border-radius:20px;padding:5px 16px;margin-bottom:20px;font-size:.68rem;letter-spacing:.3em;color:var(--pink);text-transform:uppercase;}
+    .hero-title{font-family:'Orbitron';font-size:clamp(2rem,6vw,3.2rem);font-weight:900;letter-spacing:.1em;background:linear-gradient(135deg,var(--white) 0%,var(--pink) 50%,var(--purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(255,45,155,.2));margin-bottom:12px;}
+    .hero-sub{font-size:1rem;color:var(--dim);letter-spacing:.06em;font-weight:300;}
+
+    /* ── SOCIAL CARDS ── */
+    .social-grid{display:flex;flex-direction:column;gap:16px;width:100%;max-width:480px;}
+
+    .social-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px 28px;display:flex;align-items:center;gap:22px;text-decoration:none;position:relative;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+    .social-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;pointer-events:none;}
+    .social-card:hover{transform:translateY(-3px);}
+
+    /* Discord */
+    .social-card.discord{--c1:#5865f2;--c2:#7289da;}
+    .social-card.discord::before{background:radial-gradient(ellipse 80% 80% at 0% 50%,rgba(88,101,242,.1),transparent 70%);}
+    .social-card.discord:hover{border-color:rgba(88,101,242,.5);box-shadow:0 8px 40px rgba(88,101,242,.15);}
+    .social-card.discord:hover::before{opacity:1;}
+
+    /* TikTok */
+    .social-card.tiktok{--c1:#ff0050;--c2:#00f2ea;}
+    .social-card.tiktok::before{background:radial-gradient(ellipse 80% 80% at 0% 50%,rgba(255,0,80,.08),transparent 70%);}
+    .social-card.tiktok:hover{border-color:rgba(255,0,80,.4);box-shadow:0 8px 40px rgba(255,0,80,.12);}
+    .social-card.tiktok:hover::before{opacity:1;}
+
+    .sc-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.6rem;}
+    .discord .sc-icon{background:rgba(88,101,242,.15);border:1px solid rgba(88,101,242,.25);}
+    .tiktok .sc-icon{background:rgba(255,0,80,.1);border:1px solid rgba(255,0,80,.2);}
+
+    .sc-info{flex:1;}
+    .sc-name{font-family:'Orbitron';font-size:1rem;font-weight:700;letter-spacing:.1em;color:var(--white);margin-bottom:4px;}
+    .sc-handle{font-size:.78rem;letter-spacing:.1em;color:var(--dim);margin-bottom:10px;font-weight:300;}
+    .sc-stats{display:flex;gap:16px;}
+    .sc-stat{font-size:.65rem;letter-spacing:.15em;color:rgba(240,232,255,.25);text-transform:uppercase;}
+    .sc-stat span{color:var(--dim);font-weight:600;}
+
+    .sc-arrow{font-size:1.1rem;color:var(--dim);transition:transform .3s,color .3s;flex-shrink:0;}
+    .social-card:hover .sc-arrow{transform:translateX(4px);color:var(--white);}
+
+    /* ── DIVIDER ── */
+    .divider-row{display:flex;align-items:center;gap:16px;width:100%;max-width:480px;margin:8px 0;}
+    .divider-row::before,.divider-row::after{content:'';flex:1;height:1px;background:var(--border);}
+    .divider-row span{font-size:.6rem;letter-spacing:.3em;color:rgba(240,232,255,.2);text-transform:uppercase;}
+
+    @media(max-width:500px){
+      nav{padding:0 20px;}
+      .social-card{padding:20px 18px;gap:16px;}
+      .sc-icon{width:46px;height:46px;font-size:1.3rem;}
+    }
+  </style>
+</head>
+<body>
+<div id="cursor-glow"></div>
+<canvas id="particles"></canvas>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
+  <div class="mobile-menu-logo">NOVA SYNDICATE</div>
+  <a href="index.html">Home</a>
+  <a href="team.html">Team</a>
+  <a href="status.html">Status</a>
+  <a href="information.html">Information</a>
+  <a href="announcements.html">Announcements</a>
+  <a href="credits.html">Credits</a>
+  <a href="partners.html">Partners</a>
+  <a href="social.html" class="active">Social</a>
+</div>
+
+<nav>
+  <div class="nav-logo">NOVA SYNDICATE</div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-time" id="live-time">00:00:00</div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-badge">✦ Find Us Online</div>
+    <div class="hero-title">SOCIAL</div>
+    <div class="hero-sub">Follow Nova Syndicate across all platforms.</div>
+  </div>
+
+  <div class="social-grid">
+
+    <!-- Discord -->
+    <a class="social-card discord" href="https://discord.gg/SkHmpbVYzw" target="_blank">
+      <div class="sc-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#5865f2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      </div>
+      <div class="sc-info">
+        <div class="sc-name">Discord</div>
+        <div class="sc-handle">discord.gg/SkHmpbVYzw</div>
+        <div class="sc-stats">
+          <div class="sc-stat">Community <span>Server</span></div>
+          <div class="sc-stat">Status <span style="color:rgba(80,255,140,.7)">Online</span></div>
+        </div>
+      </div>
+      <div class="sc-arrow">→</div>
+    </a>
+
+
+    <!-- TikTok Main -->
+    <a class="social-card tiktok" href="https://www.tiktok.com/@nova_syndi0" target="_blank">
+      <div class="sc-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.16 8.16 0 0 0 4.77 1.52V6.75a4.85 4.85 0 0 1-1-.06z"/></svg>
+      </div>
+      <div class="sc-info">
+        <div class="sc-name">TikTok</div>
+        <div class="sc-handle">@nova_syndi0</div>
+        <div class="sc-stats">
+          <div class="sc-stat">Type <span>Main Account</span></div>
+          <div class="sc-stat">Status <span style="color:rgba(80,255,140,.7)">Active</span></div>
+        </div>
+      </div>
+      <div class="sc-arrow">→</div>
+    </a>
+
+
+    <!-- TikTok Streaming -->
+    <a class="social-card tiktok" href="https://www.tiktok.com/@nsg_tazz" target="_blank">
+      <div class="sc-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.16 8.16 0 0 0 4.77 1.52V6.75a4.85 4.85 0 0 1-1-.06z"/></svg>
+      </div>
+      <div class="sc-info">
+        <div class="sc-name">TikTok Live</div>
+        <div class="sc-handle">@nsg_tazz</div>
+        <div class="sc-stats">
+          <div class="sc-stat">Type <span>Streaming Account</span></div>
+          <div class="sc-stat">Status <span style="color:rgba(80,255,140,.7)">Active</span></div>
+        </div>
+      </div>
+      <div class="sc-arrow">→</div>
+    </a>
+
+  </div>
+</main>
+
+<script>
+  const glow=document.getElementById('cursor-glow');
+  document.addEventListener('mousemove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';});
+  function tick(){const n=new Date();document.getElementById('live-time').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');}
+  tick();setInterval(tick,1000);
+  function toggleMenu(){const m=document.getElementById('mobile-menu');const b=document.getElementById('hamburger');m.classList.toggle('open');b.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':'';}
+
+  const canvas=document.getElementById('particles');const ctx=canvas.getContext('2d');let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();
+  window.addEventListener('resize',()=>{resize();initP();});
+  const COLORS=[[255,45,155],[139,42,255],[192,100,255],[255,255,255]];
+  class P{constructor(r){this.reset(r)}reset(r){this.x=Math.random()*W;this.y=r?Math.random()*H:H+10;this.vx=(Math.random()-.5)*.3;this.vy=-(Math.random()*.5+.2);this.size=Math.random()*1.2+.3;this.life=0;this.maxLife=Math.random()*300+300;this.wave=Math.random()*Math.PI*2;this.twinkle=Math.random()*Math.PI*2;const c=COLORS[Math.floor(Math.random()*COLORS.length)];this.r=c[0];this.g=c[1];this.b=c[2];}update(){this.life++;this.wave+=.018;this.twinkle+=.038;this.x+=this.vx+Math.sin(this.wave)*.12;this.y+=this.vy;if(this.life>this.maxLife||this.y<-20)this.reset(false);}draw(){const p=this.life/this.maxLife;const fade=p<.08?p/.08:p>.9?(1-p)/.1:1;const alpha=fade*(0.6+0.4*Math.sin(this.twinkle));const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*4);g.addColorStop(0,`rgba(${this.r},${this.g},${this.b},${alpha*.5})`);g.addColorStop(1,`rgba(${this.r},${this.g},${this.b},0)`);ctx.beginPath();ctx.arc(this.x,this.y,this.size*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(${this.r},${this.g},${this.b},${alpha})`;ctx.fill();}}
+  function initP(){particles=Array.from({length:80},()=>new P(true));}
+  function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+  initP();animate();
+</script>
+</body>
+</html>
