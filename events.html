@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Events</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <script src="config.js"></script>
+  <style>
+    :root{--pink:#ff2d9b;--purple:#8b2aff;--white:#f0e8ff;--dim:rgba(240,232,255,0.5);--bg:#05000f;--card:rgba(139,42,255,0.07);--border:rgba(139,42,255,0.25);}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--white);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;cursor:default;}
+    #cursor-glow{will-change:transform;position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(255,45,155,0.12) 0%,rgba(139,42,255,0.07) 40%,transparent 70%);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+    canvas#particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;background:linear-gradient(rgba(139,42,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;}
+    body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 30%,rgba(255,45,155,.09) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(5,0,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:'Orbitron';font-size:.85rem;font-weight:700;letter-spacing:.25em;background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none;}
+    .nav-right{display:flex;align-items:center;gap:8px;}
+    .nav-time{font-family:'Orbitron';font-size:.7rem;color:var(--dim);letter-spacing:.1em;}
+    .hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+    /* ── MOBILE MENU ── */
+    .mobile-menu{display:none;position:fixed;inset:0;z-index:1050;background:rgba(5,0,15,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-family:'Orbitron';font-size:1.1rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:12px 28px;border-radius:6px;border:1px solid transparent;transition:all .2s;}
+    .mobile-menu a:hover,.mobile-menu a.active{color:var(--white);border-color:var(--border);background:var(--card);}
+    .mobile-menu a.active{background:linear-gradient(135deg,rgba(255,45,155,.1),rgba(139,42,255,.1));border-color:rgba(255,45,155,.5);color:var(--pink);}
+    .mobile-menu-logo{font-family:'Orbitron';font-size:.85rem;font-weight:900;letter-spacing:.3em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:32px;}
+    .mobile-menu-close{position:absolute;top:24px;right:24px;background:none;border:none;color:var(--dim);font-size:1.5rem;cursor:pointer;transition:color .2s;}
+    .mobile-menu-close:hover{color:var(--white);}
+
+    /* ── MAIN ── */
+    main{position:relative;z-index:1;padding:100px 48px 80px;max-width:1100px;margin:0 auto;}
+
+    /* ── HERO ── */
+    .hero{text-align:center;margin-bottom:64px;animation:fade-up .8s ease both;}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,45,155,.08);border:1px solid rgba(255,45,155,.22);border-radius:20px;padding:5px 16px;margin-bottom:20px;font-size:.68rem;letter-spacing:.3em;color:var(--pink);text-transform:uppercase;}
+    .hero-title{font-family:'Orbitron';font-size:clamp(2rem,6vw,3.2rem);font-weight:900;letter-spacing:.1em;background:linear-gradient(135deg,var(--white) 0%,var(--pink) 50%,var(--purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(255,45,155,.2));margin-bottom:12px;}
+    .hero-sub{font-size:1rem;color:var(--dim);letter-spacing:.06em;font-weight:300;}
+
+    /* ── SECTION LABEL ── */
+    .section-label{display:flex;align-items:center;gap:16px;margin-bottom:28px;}
+    .section-label h2{font-family:'Orbitron';font-size:.75rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--pink);}
+    .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+    /* ── EVENT GRID ── */
+    .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;margin-bottom:64px;}
+
+    /* ── EVENT CARD ── */
+    .event-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;position:relative;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;animation:fade-up .6s ease both;}
+    .event-card::before{content:'';position:absolute;top:-60px;right:-60px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,45,155,.1),transparent 70%);pointer-events:none;}
+    .event-card:hover{transform:translateY(-4px);border-color:rgba(255,45,155,.4);box-shadow:0 12px 40px rgba(255,45,155,.1);}
+
+    .event-card.past{border-color:rgba(139,42,255,.2);opacity:.7;}
+    .event-card.past::before{background:radial-gradient(circle,rgba(139,42,255,.08),transparent 70%);}
+    .event-card.past:hover{border-color:rgba(139,42,255,.4);box-shadow:0 12px 40px rgba(139,42,255,.08);}
+
+    .event-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;}
+    .event-category{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:700;border:1px solid;}
+    .cat-gaming{color:#00f5a0;border-color:rgba(0,245,160,.3);background:rgba(0,245,160,.06);}
+    .cat-stream{color:#ff2d9b;border-color:rgba(255,45,155,.3);background:rgba(255,45,155,.06);}
+    .cat-community{color:#8b2aff;border-color:rgba(139,42,255,.3);background:rgba(139,42,255,.08);}
+    .cat-tournament{color:#ffd700;border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.06);}
+    .cat-fortnite{color:#00d4ff;border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.06);}
+    .cat-contest{color:#ff9500;border-color:rgba(255,149,0,.3);background:rgba(255,149,0,.06);}
+
+    .event-status{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:4px 10px;border-radius:20px;}
+    .status-upcoming{color:rgba(80,255,140,.9);background:rgba(80,255,140,.08);border:1px solid rgba(80,255,140,.2);}
+    .status-live{color:#fff;background:linear-gradient(90deg,rgba(255,45,155,.4),rgba(139,42,255,.4));border:1px solid rgba(255,45,155,.4);animation:pulse-status 1.5s ease infinite;}
+    .status-past{color:var(--dim);background:rgba(240,232,255,.04);border:1px solid rgba(240,232,255,.1);}
+    @keyframes pulse-status{0%,100%{opacity:1;}50%{opacity:.6;}}
+
+    .event-title{font-family:'Orbitron';font-size:1rem;font-weight:700;letter-spacing:.08em;color:var(--white);margin-bottom:8px;line-height:1.3;}
+    .event-desc{font-size:.88rem;color:var(--dim);line-height:1.6;font-weight:300;margin-bottom:18px;}
+
+    .event-meta{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+    .event-meta-row{display:flex;align-items:center;gap:8px;font-size:.75rem;color:rgba(240,232,255,.4);letter-spacing:.08em;}
+    .event-meta-row span{color:var(--dim);}
+    .meta-icon{font-size:.8rem;}
+
+    /* ── COUNTDOWN ── */
+    .event-countdown{background:rgba(5,0,15,.4);border:1px solid var(--border);border-radius:10px;padding:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;}
+    .cd-block{}
+    .cd-num{font-family:'Orbitron';font-size:1.3rem;font-weight:700;color:var(--pink);line-height:1;margin-bottom:3px;}
+    .cd-label{font-size:.55rem;letter-spacing:.2em;color:rgba(240,232,255,.3);text-transform:uppercase;}
+    .event-card.past .event-countdown{display:none;}
+    .event-ended{font-family:'Share Tech Mono';font-size:.75rem;color:rgba(240,232,255,.25);text-align:center;padding:10px;border:1px solid rgba(240,232,255,.08);border-radius:10px;letter-spacing:.1em;}
+
+    /* ── EMPTY STATE ── */
+    .empty-state{text-align:center;padding:48px;color:var(--dim);font-size:.9rem;letter-spacing:.1em;border:1px dashed var(--border);border-radius:14px;}
+
+    @keyframes fade-up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+    @media(max-width:768px){
+      main{padding:90px 20px 60px;}
+      .events-grid{grid-template-columns:1fr;}
+      nav{padding:0 20px;}
+    }
+  </style>
+</head>
+<body>
+<div id="cursor-glow"></div>
+<canvas id="particles"></canvas>
+
+<!-- ── MOBILE MENU ── -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
+  <div class="mobile-menu-logo">NOVA SYNDICATE</div>
+  <a href="index.html">Home</a>
+  <a href="team.html">Team</a>
+  <a href="status.html">Status</a>
+  <a href="information.html">Information</a>
+  <a href="announcements.html">Announcements</a>
+  <a href="events.html" class="active">Events</a>
+  <a href="credits.html">Credits</a>
+  <a href="partners.html">Partners</a>
+  <a href="social.html">Social</a>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">NOVA SYNDICATE</a>
+  <div class="nav-right">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-time" id="live-time">00:00:00</div>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-badge">✦ Nova Syndicate</div>
+    <div class="hero-title">EVENTS</div>
+    <div class="hero-sub">Stay up to date with everything happening in the community.</div>
+  </div>
+
+  <!-- UPCOMING -->
+  <div class="section-label"><h2>Upcoming Events</h2></div>
+  <div class="events-grid" id="upcoming-grid"></div>
+
+  <!-- PAST -->
+  <div class="section-label"><h2>Past Events</h2></div>
+  <div class="events-grid" id="past-grid"></div>
+</main>
+
+<script>
+  /* ── CURSOR ── */
+  const glow = document.getElementById('cursor-glow');
+  document.addEventListener('mousemove', e => { glow.style.left = e.clientX+'px'; glow.style.top = e.clientY+'px'; });
+
+  /* ── CLOCK ── */
+  function tick(){ const n=new Date(); document.getElementById('live-time').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':'); }
+  tick(); setInterval(tick,1000);
+
+  /* ── MENU ── */
+  function toggleMenu(){ const m=document.getElementById('mobile-menu'); const b=document.getElementById('hamburger'); m.classList.toggle('open'); b.classList.toggle('open'); document.body.style.overflow=m.classList.contains('open')?'hidden':''; }
+
+  /* ══════════════════════════════════════
+     EVENTS DATA — hier Events eintragen!
+     date format: 'YYYY-MM-DDTHH:MM:SS'
+  ══════════════════════════════════════ */
+  const EVENTS = [
+    {
+      title: 'Fortnite Skin Contest',
+      desc: 'Show off your best Fortnite skin and compete for a Custom Role prize.',
+      date: '2026-03-08T14:00:00',
+      categories: ['fortnite', 'contest'],
+      location: 'Fortnite',
+      host: 'Flightsimplayer',
+      prize: 'Custom Role',
+    },
+  ];
+
+  const CAT_LABELS = { gaming:'Gaming', stream:'Stream', community:'Community', tournament:'Tournament', fortnite:'Fortnite', contest:'Contest' };
+  const now = new Date();
+
+  function formatDate(d) {
+    return d.toLocaleDateString('en-US', { day:'numeric', month:'long', year:'numeric' }) + ' · ' +
+           d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', hour12:true });
+  }
+
+  function getStatus(d) {
+    const diff = d - now;
+    if (diff > 0 && diff < 3600000) return 'live';
+    if (diff > 0) return 'upcoming';
+    return 'past';
+  }
+
+  function buildCountdown(id, targetDate) {
+    function update() {
+      const diff = targetDate - new Date();
+      if (diff <= 0) { clearInterval(iv); return; }
+      const days = Math.floor(diff / 86400000);
+      const hrs  = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      const el = document.getElementById(id);
+      if (!el) { clearInterval(iv); return; }
+      el.querySelector('.cd-days').textContent  = String(days).padStart(2,'0');
+      el.querySelector('.cd-hrs').textContent   = String(hrs).padStart(2,'0');
+      el.querySelector('.cd-mins').textContent  = String(mins).padStart(2,'0');
+      el.querySelector('.cd-secs').textContent  = String(secs).padStart(2,'0');
+    }
+    update();
+    const iv = setInterval(update, 1000);
+  }
+
+  function renderCard(ev, idx) {
+    const d = new Date(ev.date);
+    const status = getStatus(d);
+    const isPast = status === 'past';
+    const cdId = `cd-${idx}`;
+
+    const statusLabel = status === 'live' ? '🔴 Live Now' : status === 'upcoming' ? 'Upcoming' : 'Ended';
+    const statusClass = `status-${status}`;
+
+    const countdown = isPast
+      ? `<div class="event-ended">// EVENT ENDED</div>`
+      : `<div class="event-countdown" id="${cdId}">
+          <div class="cd-block"><div class="cd-num cd-days">00</div><div class="cd-label">Days</div></div>
+          <div class="cd-block"><div class="cd-num cd-hrs">00</div><div class="cd-label">Hrs</div></div>
+          <div class="cd-block"><div class="cd-num cd-mins">00</div><div class="cd-label">Min</div></div>
+          <div class="cd-block"><div class="cd-num cd-secs">00</div><div class="cd-label">Sec</div></div>
+        </div>`;
+
+    const cats = ev.categories || [ev.category];
+    const catBadges = cats.map(c => `<span class="event-category cat-${c}">${CAT_LABELS[c]||c}</span>`).join('');
+    const hostRow = ev.host ? `<div class="event-meta-row"><span class="meta-icon">👤</span><span>${ev.host}</span></div>` : '';
+    const prizeRow = ev.prize ? `<div class="event-meta-row"><span class="meta-icon">🏆</span><span>${ev.prize}</span></div>` : '';
+
+    return `
+    <div class="event-card ${isPast?'past':''}" style="animation-delay:${idx*0.08}s">
+      <div class="event-top">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">${catBadges}</div>
+        <span class="event-status ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="event-title">${ev.title}</div>
+      <div class="event-desc">${ev.desc}</div>
+      <div class="event-meta">
+        <div class="event-meta-row"><span class="meta-icon">📅</span><span>${formatDate(d)}</span></div>
+        <div class="event-meta-row"><span class="meta-icon">📍</span><span>${ev.location}</span></div>
+        ${hostRow}${prizeRow}
+      </div>
+      ${countdown}
+    </div>`;
+  }
+
+  // Sort and render
+  const upcoming = EVENTS.filter(e => new Date(e.date) > now).sort((a,b) => new Date(a.date)-new Date(b.date));
+  const past     = EVENTS.filter(e => new Date(e.date) <= now).sort((a,b) => new Date(b.date)-new Date(a.date));
+
+  const upGrid = document.getElementById('upcoming-grid');
+  const paGrid = document.getElementById('past-grid');
+
+  if (upcoming.length === 0) {
+    upGrid.innerHTML = '<div class="empty-state">No upcoming events scheduled. Check back soon.</div>';
+  } else {
+    upcoming.forEach((ev, i) => { upGrid.innerHTML += renderCard(ev, i); });
+    upcoming.forEach((ev, i) => {
+      if (getStatus(new Date(ev.date)) !== 'past') buildCountdown(`cd-${i}`, new Date(ev.date));
+    });
+  }
+
+  if (past.length === 0) {
+    paGrid.innerHTML = '<div class="empty-state">No past events yet.</div>';
+  } else {
+    past.forEach((ev, i) => { paGrid.innerHTML += renderCard(ev, upcoming.length + i); });
+  }
+
+  /* ── PARTICLES ── */
+  const canvas=document.getElementById('particles');const ctx=canvas.getContext('2d');let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();
+  window.addEventListener('resize',()=>{resize();initP();});
+  const COLORS=[[255,45,155],[139,42,255],[192,100,255],[255,255,255]];
+  class P{constructor(r){this.reset(r)}reset(r){this.x=Math.random()*W;this.y=r?Math.random()*H:H+10;this.vx=(Math.random()-.5)*.3;this.vy=-(Math.random()*.5+.2);this.size=Math.random()*1.2+.3;this.life=0;this.maxLife=Math.random()*300+300;this.wave=Math.random()*Math.PI*2;this.twinkle=Math.random()*Math.PI*2;const c=COLORS[Math.floor(Math.random()*COLORS.length)];this.r=c[0];this.g=c[1];this.b=c[2];}update(){this.life++;this.wave+=.018;this.twinkle+=.038;this.x+=this.vx+Math.sin(this.wave)*.12;this.y+=this.vy;if(this.life>this.maxLife||this.y<-20)this.reset(false);}draw(){const p=this.life/this.maxLife;const fade=p<.08?p/.08:p>.9?(1-p)/.1:1;const alpha=fade*(0.6+0.4*Math.sin(this.twinkle));const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*4);g.addColorStop(0,`rgba(${this.r},${this.g},${this.b},${alpha*.5})`);g.addColorStop(1,`rgba(${this.r},${this.g},${this.b},0)`);ctx.beginPath();ctx.arc(this.x,this.y,this.size*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(${this.r},${this.g},${this.b},${alpha})`;ctx.fill();}}
+  function initP(){particles=Array.from({length:80},()=>new P(true));}
+  function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+  initP();animate();
+</script>
+</body>
+</html>
