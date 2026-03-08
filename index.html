@@ -837,6 +837,13 @@
     /* ── PARTICLES ── */
     #particles { position:fixed; inset:0; z-index:0; pointer-events:none; }
   </style>
+  <script>
+    /* ── RELEASE MODE — set to true to redirect all visitors to release.html ── */
+    const RELEASE_MODE = true;
+    if (RELEASE_MODE && !window.location.pathname.endsWith('release.html')) {
+      window.location.replace('release.html');
+    }
+  </script>
 </head>
 <body>
 
