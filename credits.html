@@ -98,7 +98,33 @@
     .mobile-menu-logo{font-family:'Orbitron';font-size:.85rem;font-weight:900;letter-spacing:.3em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:32px;}
     .mobile-menu-close{position:absolute;top:24px;right:24px;background:none;border:none;color:var(--dim);font-size:1.5rem;cursor:pointer;transition:color .2s;}
     .mobile-menu-close:hover{color:var(--white);}
-  </style>
+  </style>  <script>
+  /* ════════════════════════════════════════════════
+     ✏️  NOVA SYNDICATE — CONFIG
+  ════════════════════════════════════════════════ */
+  const MAINTENANCE = false;       // ✏️ true = Weiterleitung zu maintenance.html
+  const SYSTEM_FAILURE = false;    // ✏️ true = Weiterleitung zu 404.html
+  const OFFLINE = false;           // ✏️ true = alle Seiten → offline
+  const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
+  const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
+  const GLOBAL_ANNOUNCEMENT = "";
+  const RELEASE_MODE = true;      // ✏️ true = alle Besucher → release.html
+  /* ════════════════════════════════════════════════ */
+
+  const _path = window.location.pathname;
+  const _isMaintPage   = _path.endsWith('maintenance.html');
+  const _is404Page     = _path.endsWith('404.html');
+  const _isOfflinePage = _path.endsWith('offline.html');
+  const _isNormalPage  = !_isMaintPage && !_is404Page && !_isOfflinePage;
+
+  if (MAINTENANCE    && _isNormalPage)  { window.location.replace('maintenance.html'); }
+  if (!MAINTENANCE   && _isMaintPage && !window.location.search.includes('bypass=1'))   { window.location.replace('index.html'); }
+  if (SYSTEM_FAILURE && !_is404Page)    { window.location.replace('404.html'); }
+  if (!SYSTEM_FAILURE && _is404Page)    { window.location.replace('index.html'); }
+  if (OFFLINE        && !_isOfflinePage){ window.location.replace('offline.html'); }
+  if (!OFFLINE       && _isOfflinePage) { window.location.replace('index.html'); }
+  if (RELEASE_MODE   && !_isMaintPage && !window.location.pathname.endsWith('release.html')) { window.location.replace('release.html'); }
+</script>
 </head>
 <body>
 <div id="cursor-glow"></div>
@@ -138,7 +164,20 @@
     <div class="founder-info">
       <div class="founder-name">Tazz</div>
       <div class="founder-role">Founder</div>
-      <div class="founder-desc">Founded Nova Syndicate and shaped its vision, community, and identity from day one.</div>
+      <div class="founder-desc">Founded Nova Syndicate and shaped its vision and community from day one.</div>
+      <div class="founder-tags">
+        <span class="tag pink">Founder</span>
+        <span class="tag white">Community</span>
+        <span class="tag white">Vision</span>
+      </div>
+    </div>
+  </div>
+  <div class="founder-card">
+    <div class="founder-avatar">J</div>
+    <div class="founder-info">
+      <div class="founder-name">Jme</div>
+      <div class="founder-role">Founder</div>
+      <div class="founder-desc">Founded Nova Syndicate and leads the community forward.</div>
       <div class="founder-tags">
         <span class="tag pink">Founder</span>
         <span class="tag white">Community</span>
@@ -150,12 +189,25 @@
     <div class="founder-avatar">T</div>
     <div class="founder-info">
       <div class="founder-name">Tristan</div>
-      <div class="founder-role">Founder</div>
-      <div class="founder-desc">Founded Nova Syndicate and has been instrumental in building the team and growing the network.</div>
+      <div class="founder-role">Co-Founder</div>
+      <div class="founder-desc">Co-founded Nova Syndicate and built the team from the ground up.</div>
       <div class="founder-tags">
-        <span class="tag pink">Founder</span>
+        <span class="tag purple">Co-Founder</span>
         <span class="tag white">Community</span>
         <span class="tag white">Growth</span>
+      </div>
+    </div>
+  </div>
+  <div class="founder-card">
+    <div class="founder-avatar">B</div>
+    <div class="founder-info">
+      <div class="founder-name">Batman</div>
+      <div class="founder-role">Co-Founder</div>
+      <div class="founder-desc">Co-founded Nova Syndicate and keeps the community strong.</div>
+      <div class="founder-tags">
+        <span class="tag purple">Co-Founder</span>
+        <span class="tag white">Community</span>
+        <span class="tag white">Leadership</span>
       </div>
     </div>
   </div>
@@ -164,35 +216,35 @@
   <div class="section-label"><h2>Team</h2></div>
   <div class="credits-grid">
     <div class="credit-card">
-      <div class="cc-avatar">F</div>
+      <div class="cc-avatar">K</div>
       <div class="cc-info">
-        <div class="cc-name">Flightsimplayer</div>
-        <div class="cc-role">Head Moderator</div>
-        <div class="cc-contrib">Community management, moderation strategy, and keeping the server running smoothly day-to-day.</div>
+        <div class="cc-name">Kyle</div>
+        <div class="cc-role">Discord Management</div>
+        <div class="cc-contrib">Keeps the Discord server running smoothly and manages the community space.</div>
       </div>
     </div>
     <div class="credit-card">
       <div class="cc-avatar">M</div>
       <div class="cc-info">
         <div class="cc-name">Max</div>
-        <div class="cc-role">Partner & Collaborator</div>
-        <div class="cc-contrib">Key partner in growing the Nova Syndicate community and external relations.</div>
+        <div class="cc-role">Community Manager / Website Designer</div>
+        <div class="cc-contrib">Bridges the community and designs the Nova Syndicate website.</div>
       </div>
     </div>
     <div class="credit-card">
-      <div class="cc-avatar">?</div>
+      <div class="cc-avatar">I</div>
       <div class="cc-info">
-        <div class="cc-name">Open Position</div>
-        <div class="cc-role">Administrator</div>
-        <div class="cc-contrib">This role is currently vacant. Interested? Reach out to the team.</div>
+        <div class="cc-name">IDK</div>
+        <div class="cc-role">Lead Administrator</div>
+        <div class="cc-contrib">Oversees all administrative operations within Nova Syndicate.</div>
       </div>
     </div>
     <div class="credit-card">
-      <div class="cc-avatar">?</div>
+      <div class="cc-avatar">F</div>
       <div class="cc-info">
-        <div class="cc-name">Open Position</div>
-        <div class="cc-role">Moderator</div>
-        <div class="cc-contrib">We're looking for dedicated moderators to join the team.</div>
+        <div class="cc-name">Flightsimplayer</div>
+        <div class="cc-role">Head Moderator</div>
+        <div class="cc-contrib">Leads the moderation team and keeps the server safe and welcoming.</div>
       </div>
     </div>
   </div>
