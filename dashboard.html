@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--pink:#ff2d9b;--purple:#8b2aff;--white:#f0e8ff;--dim:rgba(240,232,255,0.45);--bg:#05000f;--card:rgba(139,42,255,0.07);--border:rgba(139,42,255,0.22);}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--white);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;cursor:default;}
+    #cursor-glow{will-change:transform;transform:translate(-50%,-50%);position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(255,45,155,0.12) 0%,rgba(139,42,255,0.07) 40%,transparent 70%);border-radius:50%;pointer-events:none;z-index:9998;}
+    canvas#particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;background:linear-gradient(rgba(139,42,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+    body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,45,155,.07) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(5,0,15,0.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:'Orbitron';font-size:.85rem;font-weight:700;letter-spacing:.25em;background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .nav-links{display:flex;gap:32px;list-style:none;}
+    .nav-links a{font-size:.75rem;letter-spacing:.18em;color:var(--dim);text-decoration:none;text-transform:uppercase;transition:color .2s;position:relative;padding-bottom:4px;}
+    .nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--pink);transform:scaleX(0);transition:transform .3s;}
+    .nav-links a:hover{color:var(--white);}
+    .nav-links a:hover::after{transform:scaleX(1);}
+    .nav-time{font-family:'Share Tech Mono';font-size:.7rem;color:var(--dim);letter-spacing:.1em;}
+
+    /* ── PAGE ── */
+    .page{position:relative;z-index:1;padding:100px 40px 60px;max-width:960px;margin:0 auto;}
+
+    .page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+    .ph-title{font-family:'Orbitron';font-size:1.4rem;font-weight:900;letter-spacing:.12em;color:var(--white);}
+    .ph-sub{font-size:.7rem;letter-spacing:.15em;color:var(--dim);margin-top:5px;font-family:'Share Tech Mono';}
+    .ph-live{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono';font-size:.65rem;letter-spacing:.18em;color:rgba(80,255,140,.7);}
+    .ph-dot{width:7px;height:7px;border-radius:50%;background:rgba(80,255,140,.85);box-shadow:0 0 8px rgba(80,255,140,.6);animation:pulse 2s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.35);}}
+
+    /* ── TOP ROW: stat + services ── */
+    .top-row{display:grid;grid-template-columns:200px 1fr;gap:16px;margin-bottom:16px;align-items:start;}
+
+    /* ── ACTIVE SERVICES STAT ── */
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px 22px;position:relative;overflow:hidden;}
+    .stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pink),transparent);}
+    .stat-label{font-size:.6rem;letter-spacing:.25em;color:var(--dim);text-transform:uppercase;margin-bottom:14px;font-family:'Share Tech Mono';}
+    .stat-value{font-family:'Orbitron';font-size:2.8rem;font-weight:900;letter-spacing:.05em;background:linear-gradient(135deg,var(--white),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:8px;}
+    .stat-of{font-family:'Share Tech Mono';font-size:.65rem;color:var(--dim);letter-spacing:.15em;}
+
+    /* ── SERVICE STATUS PANEL ── */
+    .services-panel{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+    .panel-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+    .panel-title{font-family:'Orbitron';font-size:.72rem;font-weight:700;letter-spacing:.22em;color:var(--white);text-transform:uppercase;}
+    .panel-live{display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono';font-size:.6rem;letter-spacing:.18em;color:rgba(80,255,140,.7);}
+    .live-dot{width:6px;height:6px;border-radius:50%;background:rgba(80,255,140,.85);box-shadow:0 0 6px rgba(80,255,140,.5);animation:pulse 2s ease-in-out infinite;}
+    .service-row{display:flex;align-items:center;padding:11px 20px;gap:14px;border-bottom:1px solid rgba(139,42,255,.07);transition:background .2s;}
+    .service-row:last-child{border-bottom:none;}
+    .service-row:hover{background:rgba(139,42,255,.05);}
+    .svc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .svc-dot.online{background:rgba(80,255,140,.85);box-shadow:0 0 7px rgba(80,255,140,.5);}
+    .svc-dot.beta{background:rgba(80,160,255,.85);box-shadow:0 0 7px rgba(80,160,255,.45);}
+    .svc-dot.maintenance{background:rgba(255,160,0,.85);box-shadow:0 0 7px rgba(255,160,0,.45);}
+    .svc-dot.offline{background:rgba(255,60,60,.85);box-shadow:0 0 7px rgba(255,60,60,.4);}
+    .svc-name{font-size:.8rem;letter-spacing:.08em;color:var(--white);flex:1;}
+    .svc-ping{font-family:'Share Tech Mono';font-size:.65rem;color:var(--dim);min-width:52px;text-align:right;}
+    .svc-uptime{font-family:'Share Tech Mono';font-size:.65rem;min-width:42px;text-align:right;}
+    .svc-uptime.high{color:rgba(80,255,140,.75);}
+    .svc-uptime.mid{color:rgba(255,160,0,.75);}
+    .svc-uptime.low{color:rgba(255,60,60,.75);}
+    .svc-badge{font-size:.56rem;letter-spacing:.15em;padding:2px 10px;border-radius:8px;text-transform:uppercase;min-width:78px;text-align:center;flex-shrink:0;}
+    .svc-badge.online{background:rgba(80,255,140,.08);border:1px solid rgba(80,255,140,.22);color:rgba(80,255,140,.85);}
+    .svc-badge.beta{background:rgba(80,160,255,.08);border:1px solid rgba(80,160,255,.22);color:rgba(80,160,255,.85);}
+    .svc-badge.maintenance{background:rgba(255,160,0,.08);border:1px solid rgba(255,160,0,.25);color:rgba(255,160,0,.85);}
+    .svc-badge.offline{background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.22);color:rgba(255,60,60,.85);}
+
+    /* ── QUICK LINKS ── */
+    .section-label{font-family:'Orbitron';font-size:.68rem;font-weight:700;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;margin-bottom:14px;margin-top:28px;}
+    .links-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+    .quick-link{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 14px;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:10px;transition:border-color .25s,transform .25s,background .25s;}
+    .quick-link:hover{border-color:rgba(255,45,155,.4);transform:translateY(-3px);background:rgba(255,45,155,.06);}
+    .ql-icon{font-size:1.4rem;line-height:1;}
+    .ql-text{font-family:'Orbitron';font-size:.58rem;font-weight:700;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;text-align:center;transition:color .25s;}
+    .quick-link:hover .ql-text{color:var(--white);}
+
+    @media(max-width:700px){
+      .page{padding:90px 20px 50px;}
+      nav{padding:0 20px;}
+      .nav-links{display:none;}
+      .top-row{grid-template-columns:1fr;}
+      .stat-card{display:flex;align-items:center;gap:20px;}
+      .links-grid{grid-template-columns:repeat(3,1fr);}
+    }
+  </style>
+</head>
+<body>
+<div id="cursor-glow"></div>
+<canvas id="particles"></canvas>
+
+<nav>
+  <div class="nav-logo">NOVA SYNDICATE</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="status.html">Status</a></li>
+    <li><a href="information.html">Information</a></li>
+    <li><a href="announcements.html">Announcements</a></li>
+  </ul>
+  <div class="nav-time" id="live-time">00:00:00</div>
+</nav>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <div class="ph-title">DASHBOARD</div>
+      <div class="ph-sub">Nova Syndicate // System Overview</div>
+    </div>
+    <div class="ph-live"><div class="ph-dot"></div>LIVE</div>
+  </div>
+
+  <div class="top-row">
+    <!-- Active Services Stat -->
+    <div class="stat-card">
+      <div class="stat-label">Active Services</div>
+      <div class="stat-value" id="svc-val">0</div>
+      <div class="stat-of" id="svc-of">of 6 total</div>
+    </div>
+
+    <!-- Service Status -->
+    <div class="services-panel">
+      <div class="panel-header">
+        <div class="panel-title">Service Status</div>
+        <div class="panel-live"><div class="live-dot"></div>Live</div>
+      </div>
+      <div id="svc-list"></div>
+    </div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="section-label">Quick Navigation</div>
+  <div class="links-grid">
+    <a class="quick-link" href="index.html"><span class="ql-icon">🏠</span><span class="ql-text">Home</span></a>
+    <a class="quick-link" href="announcements.html"><span class="ql-icon">📢</span><span class="ql-text">Announcements</span></a>
+    <a class="quick-link" href="status.html"><span class="ql-icon">⚡</span><span class="ql-text">Status</span></a>
+    <a class="quick-link" href="team.html"><span class="ql-icon">👥</span><span class="ql-text">Team</span></a>
+    <a class="quick-link" href="information.html"><span class="ql-icon">ℹ️</span><span class="ql-text">Information</span></a>
+    <a class="quick-link" href="partners.html"><span class="ql-icon">🤝</span><span class="ql-text">Partners</span></a>
+    <a class="quick-link" href="credits.html"><span class="ql-icon">✦</span><span class="ql-text">Credits</span></a>
+    <a class="quick-link" href="maintenance.html"><span class="ql-icon">🔧</span><span class="ql-text">Maintenance</span></a>
+    <a class="quick-link" href="404.html"><span class="ql-icon">🚫</span><span class="ql-text">404</span></a>
+    <a class="quick-link" href="offline.html"><span class="ql-icon">📡</span><span class="ql-text">Offline</span></a>
+  </div>
+</div>
+
+<script>
+  /* ── Cursor & Clock ── */
+  const glow=document.getElementById('cursor-glow');
+  document.addEventListener('mousemove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px';});
+  function tick(){const n=new Date();document.getElementById('live-time').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');}
+  tick();setInterval(tick,1000);
+
+  /* ── Services ── */
+  const SERVICES=[
+    {name:'Discord Server',  status:'online',      ping:'12ms', uptime:'100%'},
+    {name:'Website',         status:'beta',        ping:'38ms', uptime:'99.8%'},
+    {name:'Bot — Nova#1337', status:'online',      ping:'24ms', uptime:'99.2%'},
+    {name:'Backup Systems',  status:'online',      ping:'--',   uptime:'99.9%'},
+    {name:'Media CDN',       status:'maintenance', ping:'--',   uptime:'84.0%'},
+    {name:'API Gateway',     status:'offline',     ping:'--',   uptime:'0%'},
+  ];
+
+  const svcList=document.getElementById('svc-list');
+  let active=0;
+  SERVICES.forEach(s=>{
+    if(s.status==='online'||s.status==='beta')active++;
+    const uc=parseFloat(s.uptime)>95?'high':parseFloat(s.uptime)>80?'mid':'low';
+    svcList.innerHTML+=`<div class="service-row">
+      <div class="svc-dot ${s.status}"></div>
+      <div class="svc-name">${s.name}</div>
+      <div class="svc-ping">${s.ping}</div>
+      <div class="svc-uptime ${uc}">${s.uptime}</div>
+      <div class="svc-badge ${s.status}">${s.status}</div>
+    </div>`;
+  });
+
+  /* ── Animate stat counter ── */
+  let sv=0;const target=active;
+  const t=setInterval(()=>{sv=Math.min(sv+1,target);document.getElementById('svc-val').textContent=sv;if(sv>=target)clearInterval(t);},120);
+
+  /* ── Live ping jitter ── */
+  setInterval(()=>{
+    document.querySelectorAll('.svc-ping').forEach(p=>{
+      if(p.textContent==='--')return;
+      const base=parseInt(p.textContent);
+      p.textContent=Math.max(1,base+Math.floor((Math.random()-.5)*8))+'ms';
+    });
+  },3000);
+
+  /* ── Particles ── */
+  const canvas=document.getElementById('particles');const ctx=canvas.getContext('2d');let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();
+  window.addEventListener('resize',()=>{resize();initP();});
+  const COLORS=[[255,45,155],[139,42,255],[192,100,255],[255,255,255]];
+  class P{constructor(r){this.reset(r)}reset(r){this.x=Math.random()*W;this.y=r?Math.random()*H:H+10;this.vx=(Math.random()-.5)*.3;this.vy=-(Math.random()*.5+.2);this.size=Math.random()*1.2+.3;this.life=0;this.maxLife=Math.random()*300+300;this.wave=Math.random()*Math.PI*2;this.twinkle=Math.random()*Math.PI*2;const c=COLORS[Math.floor(Math.random()*COLORS.length)];this.r=c[0];this.g=c[1];this.b=c[2];}update(){this.life++;this.wave+=.018;this.twinkle+=.038;this.x+=this.vx+Math.sin(this.wave)*.12;this.y+=this.vy;if(this.life>this.maxLife||this.y<-20)this.reset(false);}draw(){const p=this.life/this.maxLife;const fade=p<.08?p/.08:p>.9?(1-p)/.1:1;const alpha=fade*(0.6+0.4*Math.sin(this.twinkle));const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*4);g.addColorStop(0,`rgba(${this.r},${this.g},${this.b},${alpha*.5})`);g.addColorStop(1,`rgba(${this.r},${this.g},${this.b},0)`);ctx.beginPath();ctx.arc(this.x,this.y,this.size*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(${this.r},${this.g},${this.b},${alpha})`;ctx.fill();}}
+  function initP(){particles=Array.from({length:80},()=>new P(true));}
+  function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+  initP();animate();
+</script>
+</body>
+</html>
