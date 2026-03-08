@@ -130,8 +130,9 @@
     }
 
     /* ── HAMBURGER MENU ── */
+    .nav-links { display:none !important; }
     .hamburger {
-      display: none;
+      display: flex;
       flex-direction: column;
       gap: 5px;
       cursor: pointer;
@@ -206,7 +207,6 @@
 
     @media(max-width:768px) {
       .nav-links { display:none; }
-      .hamburger { display:flex; }
     }
   </style>
 </head>
@@ -223,6 +223,9 @@
   <a href="status.html" >Status</a>
   <a href="information.html" class="active">Information</a>
   <a href="announcements.html" >Announcements</a>
+  <a href="credits.html" >Credits</a>
+  <a href="partners.html" >Partners</a>
+  <a href="social.html" >Social</a>
 </div>
 <canvas id="particles"></canvas>
 
@@ -322,7 +325,7 @@
   <div class="status-item">
     <span class="status-dot yellow"></span>
     <span>Team</span>
-    <span class="status-label">10 Members</span>
+    <span class="status-label">8 Members</span>
   </div>
   <div class="status-item">
     <span class="status-dot"></span>
