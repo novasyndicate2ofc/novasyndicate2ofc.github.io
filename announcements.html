@@ -15,8 +15,9 @@
   const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
   const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
   const GLOBAL_THEME = "default";
-  const GLOBAL_ANNOUNCEMENT = "RELEASE SOON!";
+  const GLOBAL_ANNOUNCEMENT = "";
   const RELEASE_MODE = false;      // ✏️ true = alle Besucher → release.html
+  if (RELEASE_MODE && !window.location.pathname.endsWith('release.html')) { window.location.replace('release.html'); }
   /* ════════════════════════════════════════════════ */
 
   const _isMaintPage = window.location.href.includes('maintenance.html');
@@ -335,9 +336,11 @@
   <a href="information.html" >Information</a>
   <a href="announcements.html" class="active">Announcements</a>
   <a href="events.html">Events</a>
+  <a href="update.html">Update</a>
   <a href="credits.html">Credits</a>
   <a href="partners.html">Partners</a>
   <a href="social.html">Social</a>
+  <a href="roster.html">Roster</a>
 </div>
 <canvas id="particles"></canvas>
 
@@ -394,22 +397,16 @@
   ════════════════════════════════════════════════ */
   const ANNOUNCEMENTS = [
     {
-      type: "warning",
-      title: "Maintenance",
-      text: "Website is going in Maintenance at 8 PM untill Tmr 11:50 AM.",
-      date: "05.03.2026"
+      type: "updated",
+      title: "Pages Updating",
+      text: "The Pages will be going Online",
+      date: "11.03.2026"
     },
      {
-      type: "new",
-      title: "More Pages",
-      text: "Added More Pages! Dashboard is only with Founder Role availible!",
-      date: "08.03.2026"
-    },
-     {
-      type: "info",
-      title: "Website Release",
-      text: "The Release of the Website will be showed on the MAIN PAGE!",
-      date: "08.03.2026"
+      type: "error",
+      title: "The has been some Erros",
+      text: "An error happened on Status and Event",
+      date: "11.03.2026"
     },
   ];
   /* ════════════════════════════════════════════════ */
