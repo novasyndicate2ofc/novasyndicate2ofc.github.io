@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nova Syndicate — Roster</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <script>
+  const MAINTENANCE = false;
+  const SYSTEM_FAILURE = false;
+  const OFFLINE = false;
+  const OFFLINE_REASON = "";
+  const OFFLINE_UNTIL  = "";
+  const GLOBAL_ANNOUNCEMENT = "";
+  const RELEASE_MODE = false;
+  const _path = window.location.pathname;
+  const _isMaintPage   = _path.endsWith('maintenance.html');
+  const _is404Page     = _path.endsWith('404.html');
+  const _isOfflinePage = _path.endsWith('offline.html');
+  const _isNormalPage  = !_isMaintPage && !_is404Page && !_isOfflinePage;
+  if (MAINTENANCE    && _isNormalPage)  { window.location.replace('maintenance.html'); }
+  if (!MAINTENANCE   && _isMaintPage && !window.location.search.includes('bypass=1')) { window.location.replace('index.html'); }
+  if (SYSTEM_FAILURE && !_is404Page)    { window.location.replace('404.html'); }
+  if (!SYSTEM_FAILURE && _is404Page)    { window.location.replace('index.html'); }
+  if (OFFLINE        && !_isOfflinePage){ window.location.replace('offline.html'); }
+  if (!OFFLINE       && _isOfflinePage) { window.location.replace('index.html'); }
+  if (RELEASE_MODE && !window.location.pathname.endsWith('release.html')) { window.location.replace('release.html'); }
+  </script>
+  <style>
+    :root{--pink:#ff2d9b;--purple:#8b2aff;--white:#f0e8ff;--dim:rgba(240,232,255,0.5);--bg:#05000f;--card:rgba(139,42,255,0.07);--border:rgba(139,42,255,0.25);}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--white);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;cursor:default;}
+    #cursor-glow{will-change:transform;position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(255,45,155,0.12) 0%,rgba(139,42,255,0.07) 40%,transparent 70%);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);}
+    canvas#particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;background:linear-gradient(rgba(139,42,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,42,255,.04) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0;}
+    body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 30%,rgba(255,45,155,.09) 0%,transparent 70%);pointer-events:none;z-index:0;}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(5,0,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+    .nav-logo{font-family:'Orbitron';font-size:.85rem;font-weight:700;letter-spacing:.25em;background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-decoration:none;}
+    .nav-right{display:flex;align-items:center;gap:8px;}
+    .nav-time{font-family:'Orbitron';font-size:.7rem;color:var(--dim);letter-spacing:.1em;}
+    .hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .mobile-menu{display:none;position:fixed;inset:0;z-index:1050;background:rgba(5,0,15,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{font-family:'Orbitron';font-size:1.1rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:12px 28px;border-radius:6px;border:1px solid transparent;transition:all .2s;}
+    .mobile-menu a:hover,.mobile-menu a.active{color:var(--white);border-color:var(--border);background:var(--card);}
+    .mobile-menu a.active{background:linear-gradient(135deg,rgba(255,45,155,.1),rgba(139,42,255,.1));border-color:rgba(255,45,155,.5);color:var(--pink);}
+    .mobile-menu-logo{font-family:'Orbitron';font-size:.85rem;font-weight:900;letter-spacing:.3em;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:32px;}
+    .mobile-menu-close{position:absolute;top:24px;right:24px;background:none;border:none;color:var(--dim);font-size:1.5rem;cursor:pointer;transition:color .2s;}
+    .mobile-menu-close:hover{color:var(--white);}
+
+    /* ── MAIN ── */
+    main{position:relative;z-index:1;padding:100px 48px 80px;max-width:900px;margin:0 auto;}
+
+    .hero{text-align:center;margin-bottom:56px;animation:fade-up .8s ease both;}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,45,155,.08);border:1px solid rgba(255,45,155,.22);border-radius:20px;padding:5px 16px;margin-bottom:20px;font-size:.68rem;letter-spacing:.3em;color:var(--pink);text-transform:uppercase;}
+    .hero-title{font-family:'Orbitron';font-size:clamp(2rem,6vw,3.2rem);font-weight:900;letter-spacing:.1em;background:linear-gradient(135deg,var(--white) 0%,var(--pink) 50%,var(--purple) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 30px rgba(255,45,155,.2));margin-bottom:12px;}
+    .hero-sub{font-size:1rem;color:var(--dim);letter-spacing:.06em;font-weight:300;}
+
+    .section-label{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
+    .section-label h2{font-family:'Orbitron';font-size:.75rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--pink);}
+    .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+    /* ── ROSTER TABLE ── */
+    .roster-table{width:100%;border-collapse:collapse;animation:fade-up .6s .1s ease both;opacity:0;animation-fill-mode:forwards;}
+    .roster-table thead tr{border-bottom:1px solid var(--border);}
+    .roster-table th{font-family:'Orbitron';font-size:.6rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--dim);padding:10px 16px;text-align:left;}
+    .roster-table tbody tr{border-bottom:1px solid rgba(139,42,255,.1);transition:background .2s;}
+    .roster-table tbody tr:hover{background:rgba(139,42,255,.06);}
+    .roster-table td{padding:18px 16px;font-size:.9rem;}
+
+    .member-cell{display:flex;align-items:center;gap:14px;}
+    .member-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:.85rem;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 0 14px rgba(255,45,155,.25);}
+    .member-name{font-family:'Orbitron';font-size:.85rem;font-weight:700;letter-spacing:.08em;color:var(--white);}
+
+    .role-badge{display:inline-flex;align-items:center;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;padding:4px 12px;border-radius:20px;color:#ff2d9b;border:1px solid rgba(255,45,155,.3);background:rgba(255,45,155,.06);}
+
+    .join-date{font-family:'Share Tech Mono';font-size:.75rem;color:var(--dim);letter-spacing:.05em;}
+    .join-date-sub{font-size:.65rem;color:rgba(240,232,255,.25);margin-top:2px;letter-spacing:.05em;}
+
+    .status-dot{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;letter-spacing:.1em;color:rgba(80,255,140,.8);}
+    .dot{width:7px;height:7px;border-radius:50%;background:rgba(80,255,140,.85);box-shadow:0 0 8px rgba(80,255,140,.6);animation:pulse 2s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.35);}}
+    @keyframes fade-up{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+    .count-info{font-family:'Share Tech Mono';font-size:.7rem;color:rgba(240,232,255,.25);letter-spacing:.15em;margin-top:16px;text-align:right;}
+
+    @media(max-width:600px){
+      main{padding:90px 16px 60px;}
+      nav{padding:0 20px;}
+      .roster-table th:nth-child(3),.roster-table td:nth-child(3){display:none;}
+    }
+  </style>
+</head>
+<body>
+<div id="cursor-glow"></div>
+<canvas id="particles"></canvas>
+
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" onclick="toggleMenu()">✕</button>
+  <div class="mobile-menu-logo">NOVA SYNDICATE</div>
+  <a href="index.html">Home</a>
+  <a href="team.html">Team</a>
+  <a href="status.html">Status</a>
+  <a href="information.html">Information</a>
+  <a href="announcements.html">Announcements</a>
+  <a href="events.html">Events</a>
+  <a href="update.html">Update</a>
+  <a href="credits.html">Credits</a>
+  <a href="partners.html">Partners</a>
+  <a href="social.html">Social</a>
+  <a href="roster.html" class="active">Roster</a>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">NOVA SYNDICATE</a>
+  <div class="nav-right">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-time" id="live-time">00:00:00</div>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-badge">✦ Nova Syndicate</div>
+    <div class="hero-title">ROSTER</div>
+    <div class="hero-sub">Official roster of the Nova Syndicate team.</div>
+  </div>
+
+  <div class="section-label"><h2>Roster Team</h2></div>
+
+  <table class="roster-table">
+    <thead>
+      <tr>
+        <th>Member</th>
+        <th>Role</th>
+        <th>Joined</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <div class="member-cell">
+            <div class="member-avatar">J</div>
+            <div class="member-name">Jme</div>
+          </div>
+        </td>
+        <td><span class="role-badge">Roster Team</span></td>
+        <td>
+          <div class="join-date">Feb 2, 2026</div>
+          <div class="join-date-sub">02.21.2026 · 4:17 PM</div>
+        </td>
+        <td><span class="status-dot"><span class="dot"></span>Active</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="member-cell">
+            <div class="member-avatar">F</div>
+            <div class="member-name">Flightsimplayer</div>
+          </div>
+        </td>
+        <td><span class="role-badge">Roster Team</span></td>
+        <td>
+          <div class="join-date">Mar 2, 2026</div>
+          <div class="join-date-sub">03.02.2026 · 10:12 PM</div>
+        </td>
+        <td><span class="status-dot"><span class="dot"></span>Active</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="count-info">2 members · Roster Team</div>
+</main>
+
+<script>
+  const glow = document.getElementById('cursor-glow');
+  document.addEventListener('mousemove', e => { glow.style.left=e.clientX+'px'; glow.style.top=e.clientY+'px'; });
+  function tick(){ const n=new Date(); document.getElementById('live-time').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':'); }
+  tick(); setInterval(tick,1000);
+  function toggleMenu(){ const m=document.getElementById('mobile-menu'); const b=document.getElementById('hamburger'); m.classList.toggle('open'); b.classList.toggle('open'); document.body.style.overflow=m.classList.contains('open')?'hidden':''; }
+
+  const canvas=document.getElementById('particles');const ctx=canvas.getContext('2d');let W,H,particles=[];
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}resize();
+  window.addEventListener('resize',resize);
+  const COLORS=[[255,45,155],[139,42,255],[192,100,255],[255,255,255]];
+  class P{constructor(r){this.reset(r)}reset(r){this.x=Math.random()*W;this.y=r?Math.random()*H:H+10;this.vx=(Math.random()-.5)*.3;this.vy=-(Math.random()*.5+.2);this.size=Math.random()*1.2+.3;this.life=0;this.maxLife=Math.random()*300+300;this.wave=Math.random()*Math.PI*2;this.twinkle=Math.random()*Math.PI*2;const c=COLORS[Math.floor(Math.random()*COLORS.length)];this.r=c[0];this.g=c[1];this.b=c[2];}update(){this.life++;this.wave+=.018;this.twinkle+=.038;this.x+=this.vx+Math.sin(this.wave)*.12;this.y+=this.vy;if(this.life>this.maxLife||this.y<-20)this.reset(false);}draw(){const p=this.life/this.maxLife;const fade=p<.08?p/.08:p>.9?(1-p)/.1:1;const alpha=fade*(0.6+0.4*Math.sin(this.twinkle));const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size*4);g.addColorStop(0,`rgba(${this.r},${this.g},${this.b},${alpha*.5})`);g.addColorStop(1,`rgba(${this.r},${this.g},${this.b},0)`);ctx.beginPath();ctx.arc(this.x,this.y,this.size*4,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(${this.r},${this.g},${this.b},${alpha})`;ctx.fill();}}
+  function initP(){particles=Array.from({length:80},()=>new P(true));}
+  function animate(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw();});requestAnimationFrame(animate);}
+  initP();animate();
+</script>
+</body>
+</html>
