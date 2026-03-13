@@ -7,13 +7,14 @@
      ✏️  NOVA SYNDICATE — CONFIG
      Hier Theme, Maintenance & Announcement ändern!
   ════════════════════════════════════════════════ */
-  const MAINTENANCE = true;
+  const MAINTENANCE = false;
   const SYSTEM_FAILURE = false;
   const OFFLINE = false;           // ✏️ true = alle Seiten → offline
   const OFFLINE_REASON = "";       // ✏️ z.B. "Server maintenance"
   const OFFLINE_UNTIL  = "";       // ✏️ z.B. "Tmr 11:50 AM"
   const GLOBAL_ANNOUNCEMENT = "";
   const RELEASE_MODE = false;      // ✏️ true = alle Besucher → release.html
+  if (RELEASE_MODE && !window.location.pathname.endsWith('release.html')) { window.location.replace('release.html'); }
   /* ════════════════════════════════════════════════ */
 
   // Maintenance
@@ -389,9 +390,11 @@
   <a href="information.html" >Information</a>
   <a href="announcements.html" >Announcements</a>
   <a href="events.html" >Events</a>
+  <a href="update.html" >Update</a>
   <a href="credits.html" >Credits</a>
   <a href="partners.html" >Partners</a>
   <a href="social.html" >Social</a>
+  <a href="roster.html" >Roster</a>
 </div>
 
 <!-- ─── PARTICLES ─── -->
@@ -463,7 +466,7 @@
   ════════════════════════════════════════════════ */
   const STATUS_ITEMS = [
     { name: "Discord Server", badge: "online",      uptime: 100 },
-    { name: "Website",        badge: "beta",         uptime: 76  },
+    { name: "Website",        badge: "online",       uptime: 100 },
     { name: "Team",           badge: "online",      uptime: 100 },
     { name: "TikTok",         badge: "online",      uptime: 100 },
   ];
